@@ -15,7 +15,8 @@ function App() {
     const getMusic = async () => {
       if (searchQuery.length == 0) return;
 
-      const url = `${ITUNES_BASE_URL}search?term=${searchQuery.replace(' ', '+')}&media=music&entity=album&limit=100`;
+      const url = `${ITUNES_BASE_URL}search?term=${encodeURIComponent(searchQuery)}&media=music&entity=album&limit=100`;
+      // const url = `https://itunes.apple.com/lookup?id=1552439096&entity=album&limit=200`
       const response = await fetch(url);
 
       if (!response.ok) console.error(response);

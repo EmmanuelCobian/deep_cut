@@ -1,65 +1,33 @@
 import { useState, useEffect } from 'react';
-import { mergeArraysOfObjects } from './utils/utils';
+import { fetchAlbums, fetchArtists } from './api/itunes';
 import SearchBar from './shared/SearchBar';
 import './App.css';
 
 function App() {
-  const ITUNES_BASE_URL = 'https://itunes.apple.com';
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [artistResults, setArtistResults] = useState([]);
+  const [albumResults, setAlbumResults] = useState([]);
+  const [selectedArtist, setSelectedArtist] = useState(-1);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
   };
 
   useEffect(() => {
-    const fetchAlbums = async () => {
-      const url = `${ITUNES_BASE_URL}/search?term=${encodeURIComponent(searchQuery)}&media=music&entity=album&limit=100`;
-      const response = await fetch(url);
-
-      if (!response.ok) console.error(response);
-
-      return response;
-    };
-
-    const fetchArtistId = async () => {
-      const url = `${ITUNES_BASE_URL}/search?term=${encodeURIComponent(searchQuery)}&media=music&entity=musicArtist&limit=5`;
-      const response = await fetch(url);
-
-      if (!response.ok) console.error(response);
-
-      const json = await response.json();
-      const artistId = json.results[0].artistId;
-      return artistId;
-    };
-
-    const fetchArtistDiscography = async () => {
-      const artistId = await fetchArtistId();
-      const url = `${ITUNES_BASE_URL}/lookup?id=${artistId}&entity=album&limit=200`;
-      const response = await fetch(url);
-
-      if (!response.ok) console.error(response);
-
-      return response;
-    };
-
     const fetchMusic = async () => {
-      if (searchQuery.length == 0) return;
+      if (searchQuery.length === 0) return;
 
-      const albums = await fetchAlbums();
-      const albumsJson = await albums.json();
+      try {
+        const [albums, artists] = await Promise.all([
+          fetchAlbums(searchQuery),
+          fetchArtists(searchQuery),
+        ]);
 
-      const artistDiscography = await fetchArtistDiscography();
-      const artistJson = await artistDiscography.json();
-
-      console.log(artistJson.results)
-
-      const mergedResults = mergeArraysOfObjects(
-        albumsJson.results,
-        artistJson.results.splice(1),
-        'collectionId'
-      );
-      setSearchResults(mergedResults);
+        setAlbumResults(albums);
+        setArtistResults(artists);
+      } catch (error) {
+        console.error('Failed to fetch music:', error);
+      }
     };
 
     fetchMusic();
@@ -71,7 +39,22 @@ function App() {
       <h1>Deep Cut</h1>
       <p>search query: {searchQuery}</p>
       <div>
-        {searchResults.map((res) => (
+        {artistResults.map((artist) => (
+          <div key={artist.artistId}>
+            <p>{artist.artistName}</p>
+            {artist.artwork && (
+              <img
+                src={artist.artwork}
+                alt={`Artwork for ${artist.artistName}`}
+              />
+            )}
+            <hr />
+          </div>
+        ))}
+      </div>
+      <hr />
+      <div>
+        {albumResults.map((res) => (
           <div key={res.collectionId}>
             <p>{res.artistName}</p>
             <p>{res.collectionName}</p>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams, Link } from 'react-router';
 import { fetchAlbum } from '../api/itunes';
 
 function Album() {
@@ -47,6 +47,15 @@ function Album() {
 
   if (isLoading) {
     return <p>loading...</p>;
+  }
+
+  if (error) {
+    return (
+      <div>
+        <p>{error}</p>
+        <Link to={'/'}>Go back home</Link>
+      </div>
+    );
   }
 
   return (

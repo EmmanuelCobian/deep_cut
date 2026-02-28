@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router';
+import { useParams, useNavigate, Link } from 'react-router';
 import { fetchArtistDiscography } from '../api/itunes';
 
 function Artist() {
@@ -9,12 +9,6 @@ function Artist() {
   const [discography, setDiscography] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-
-  const handleErrorClick = (e) => {
-    e.preventDefault();
-    setError('');
-    navigate('/');
-  };
 
   const handleAlbumClick = (albumId) => {
     navigate(`/album/${albumId}`);
@@ -50,7 +44,7 @@ function Artist() {
     return (
       <div>
         <p>{error}</p>
-        <button onClick={handleErrorClick}>Clear error message</button>
+        <Link to={'/'}>Go back home</Link>
       </div>
     );
   }

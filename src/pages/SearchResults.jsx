@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, Link } from 'react-router';
 import { fetchAlbums, fetchArtists } from '../api/itunes';
 
 function SearchResults() {
@@ -13,12 +13,6 @@ function SearchResults() {
   const handleArtistClick = (e, artist) => {
     e.preventDefault();
     navigate(`/artist/${artist.artistId}`);
-  };
-
-  const handleErrorClick = (e) => {
-    e.preventDefault();
-    setError('');
-    navigate('/');
   };
 
   const handleAlbumClick = (albumId) => {
@@ -58,7 +52,7 @@ function SearchResults() {
     return (
       <div>
         <p>{error}</p>
-        <button onClick={handleErrorClick}>Clear error message</button>
+        <Link to={'/'}>Go back home</Link>
       </div>
     );
   }

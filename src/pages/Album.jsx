@@ -13,7 +13,7 @@ function Album() {
     const totalMinutes = Math.floor(milliseconds / (1000 * 60));
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
-    return { hours, minutes };
+    return `${hours > 0 ? `${hours} hr` : ''} ${minutes} min`;
   };
 
   const msToMinutesSeconds = (milliseconds) => {
@@ -25,8 +25,8 @@ function Album() {
   };
 
   const getYear = (date) => {
-    return date.split('-')[0]
-  }
+    return date.split('-')[0];
+  };
 
   const getAlbumRuntime = (songs) => {
     let milliseconds = 0;
@@ -43,8 +43,7 @@ function Album() {
         setIsLoading(true);
         const res = await fetchAlbum(albumId);
         const [header, ...rest] = res.results;
-        const { hours, minutes } = getAlbumRuntime(rest);
-        setAlbum({ ...header, hours: hours, minutes: minutes });
+        setAlbum({ ...header, runtime: getAlbumRuntime(rest) });
         setSongs(rest);
         console.log(rest);
         setIsLoading(false);
@@ -85,9 +84,7 @@ function Album() {
           <p>{album.artistName}</p>
           <p>{getYear(album.releaseDate)}</p>
           <p>{album.trackCount} songs</p>
-          <p>
-            {album.hours > 0 && `${album.hours} hr`} {album.minutes} min
-          </p>
+          <p>{album.runtime}</p>
         </div>
       </div>
 

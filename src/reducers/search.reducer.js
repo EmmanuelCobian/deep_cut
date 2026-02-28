@@ -57,10 +57,13 @@ const reducer = (state = initialState, action) => {
     }
 
     case actions.fetchDiscographySuccess: {
+      const sortedDiscography = [...action.discography].sort(
+          (a, b) => new Date(b.releaseDate) - new Date(a.releaseDate)
+        );
       return {
         ...state,
         isLoading: false,
-        artistDiscography: action.discography,
+        artistDiscography: sortedDiscography,
       };
     }
 

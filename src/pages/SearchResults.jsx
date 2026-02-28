@@ -21,6 +21,10 @@ function SearchResults() {
     navigate('/');
   };
 
+  const handleAlbumClick = (albumId) => {
+    navigate(`/album/${albumId}`);
+  };
+
   useEffect(() => {
     const getSearchResults = async () => {
       if (!query || query.length === 0) return;
@@ -39,7 +43,7 @@ function SearchResults() {
       } catch (error) {
         console.error(`Failed to fetch music: ${error}`);
         setError(error.message);
-        setIsLoading(false)
+        setIsLoading(false);
       }
     };
 
@@ -83,7 +87,10 @@ function SearchResults() {
 
       <div>
         {albums.map((album) => (
-          <div key={album.collectionId}>
+          <div
+            key={album.collectionId}
+            onClick={() => handleAlbumClick(album.collectionId)}
+          >
             <p>{album.artistName}</p>
             <p>{album.collectionName}</p>
             <img

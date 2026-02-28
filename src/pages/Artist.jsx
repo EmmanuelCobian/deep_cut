@@ -15,6 +15,10 @@ function Artist() {
     navigate('/');
   };
 
+  const handleAlbumClick = (albumId) => {
+    navigate(`/album/${albumId}`);
+  };
+
   useEffect(() => {
     const getDiscography = async () => {
       try {
@@ -53,7 +57,10 @@ function Artist() {
     <div>
       <h1>{discography[0].artistName}</h1>
       {discography.slice(1).map((album) => (
-        <div key={album.collectionId}>
+        <div
+          key={album.collectionId}
+          onClick={() => handleAlbumClick(album.collectionId)}
+        >
           <p>{album.collectionName}</p>
           <img
             src={album.artworkUrl100}

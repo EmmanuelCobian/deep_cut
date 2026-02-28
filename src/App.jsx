@@ -1,22 +1,23 @@
 import { useEffect, useReducer } from 'react';
+import { Routes, Route, useNavigate } from 'react-router';
 import {
   reducer as searchReducer,
   actions as searchActions,
   initialState as initialSearchState,
 } from './reducers/search.reducer';
-import {
-  fetchAlbums,
-  fetchArtists,
-  fetchArtistDiscography,
-} from './api/itunes';
-import SearchBar from './shared/SearchBar';
+import { fetchArtistDiscography } from './api/itunes';
+import Header from './shared/Header';
+import Landing from './pages/Landing';
+import SearchResults from './pages/SearchResults';
 import './App.css';
 
 function App() {
   const [searchState, dispatch] = useReducer(searchReducer, initialSearchState);
+  const navigate = useNavigate();
 
   const handleSearch = (query) => {
     dispatch({ type: searchActions.changeSearchQuery, searchQuery: query });
+    navigate(`/search/${query}`);
   };
 
   const handleArtistClick = (event, artist) => {
@@ -48,33 +49,6 @@ function App() {
 
     getDiscography();
   }, [searchState.selectedArtistId]);
-
-  useEffect(() => {
-    const getSearchResults = async () => {
-      if (searchState.searchQuery.length === 0) return;
-
-      try {
-        dispatch({ type: searchActions.fetchSearchResults });
-        const [albums, artists] = await Promise.all([
-          fetchAlbums(searchState.searchQuery),
-          fetchArtists(searchState.searchQuery),
-        ]);
-        dispatch({
-          type: searchActions.fetchSearchResultsSuccess,
-          albums: albums,
-          artists: artists,
-        });
-      } catch (error) {
-        console.error(`Failed to fetch music: ${error}`);
-        dispatch({
-          type: searchActions.fetchSearchResultsFailure,
-          error: error,
-        });
-      }
-    };
-
-    getSearchResults();
-  }, [searchState.searchQuery]);
 
   if (searchState.error) {
     return (
@@ -113,42 +87,20 @@ function App() {
 
   return (
     <>
-      <SearchBar onSearch={handleSearch} />
-      <h1>Deep Cut</h1>
-
-      <div>
-        {searchState.artists.map((artist) => (
-          <div
-            key={artist.artistId}
-            onClick={(e) => handleArtistClick(e, artist)}
-          >
-            <p>{artist.artistName}</p>
-            {artist.artwork && (
-              <img
-                src={artist.artwork}
-                alt={`Artwork for ${artist.artistName}`}
-              />
-            )}
-            <hr />
-          </div>
-        ))}
-      </div>
-
-      <hr />
-
-      <div>
-        {searchState.albums.map((album) => (
-          <div key={album.collectionId}>
-            <p>{album.artistName}</p>
-            <p>{album.collectionName}</p>
-            <img
-              src={album.artworkUrl100}
-              alt={`Cover art for ${album.collectionName}`}
+      <Header onSearch={handleSearch} />
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route
+          path="/search/:query"
+          element={
+            <SearchResults
+              searchState={searchState}
+              dispatch={dispatch}
+              handleArtistClick={handleArtistClick}
             />
-            <hr />
-          </div>
-        ))}
-      </div>
+          }
+        />
+      </Routes>
     </>
   );
 }

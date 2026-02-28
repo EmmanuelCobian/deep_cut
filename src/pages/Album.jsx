@@ -16,6 +16,18 @@ function Album() {
     return { hours, minutes };
   };
 
+  const msToMinutesSeconds = (milliseconds) => {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const formattedSeconds = seconds.toString().padStart(2, '0');
+    return `${minutes}:${formattedSeconds}`;
+  };
+
+  const getYear = (date) => {
+    return date.split('-')[0]
+  }
+
   const getAlbumRuntime = (songs) => {
     let milliseconds = 0;
     for (let i = 0; i < songs.length; i++) {
@@ -34,6 +46,7 @@ function Album() {
         const { hours, minutes } = getAlbumRuntime(rest);
         setAlbum({ ...header, hours: hours, minutes: minutes });
         setSongs(rest);
+        console.log(rest);
         setIsLoading(false);
       } catch (error) {
         console.error(`Failed to fetch discography: ${error}`);
@@ -70,13 +83,42 @@ function Album() {
 
         <div>
           <p>{album.artistName}</p>
-          <p>{album.releaseDate}</p>
+          <p>{getYear(album.releaseDate)}</p>
           <p>{album.trackCount} songs</p>
           <p>
             {album.hours > 0 && `${album.hours} hr`} {album.minutes} min
           </p>
         </div>
       </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+          {songs.map((song, idx) => (
+            <tr key={songs.trackId}>
+              <td>{idx + 1}</td>
+              <td>
+                <p>{song.trackName}</p>
+                <div>
+                  <p>
+                    <span>
+                      {song.contentAdvisoryRating === 'Explicit' && 'E'}
+                    </span>{' '}
+                    {song.artistName}
+                  </p>
+                </div>
+              </td>
+              <td>{msToMinutesSeconds(song.trackTimeMillis)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 }

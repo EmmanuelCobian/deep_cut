@@ -42,7 +42,7 @@ function App() {
         });
       } catch (error) {
         console.error(`Failed to fetch discography: ${error}`);
-        dispatch({ type: searchActions.fetchDiscographyFailure });
+        dispatch({ type: searchActions.fetchDiscographyFailure, error: error });
       }
     };
 
@@ -66,7 +66,10 @@ function App() {
         });
       } catch (error) {
         console.error(`Failed to fetch music: ${error}`);
-        dispatch({ type: searchActions.fetchSearchResultsFailure });
+        dispatch({
+          type: searchActions.fetchSearchResultsFailure,
+          error: error,
+        });
       }
     };
 

@@ -59,6 +59,7 @@ function Artist() {
             src={album.artworkUrl100}
             alt={`Cover art for ${album.collectionName}`}
           />
+          <hr />
         </div>
       ))}
     </div>

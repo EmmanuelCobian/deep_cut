@@ -5,21 +5,14 @@ import SearchResults from './pages/SearchResults';
 import Artist from './pages/Artist';
 import './App.css';
 
-function App() {return (
+function App() {
+  return (
     <>
       <Header />
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route
-          path="/search/:query"
-          element={
-            <SearchResults />
-          }
-        />
-        <Route
-          path="/artist/:artistId"
-          element={<Artist />}
-        />
+        <Route path="/search/:query" element={<SearchResults />} />
+        <Route path="/artist/:artistId" element={<Artist />} />
       </Routes>
     </>
   );

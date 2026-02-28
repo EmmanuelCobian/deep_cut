@@ -37,7 +37,6 @@ function App() {
     <>
       <SearchBar onSearch={handleSearch} />
       <h1>Deep Cut</h1>
-      <p>search query: {searchQuery}</p>
       <div>
         {artistResults.map((artist) => (
           <div key={artist.artistId}>

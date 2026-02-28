@@ -3,8 +3,14 @@ import { useNavigate, useParams } from 'react-router';
 import { fetchAlbums, fetchArtists } from '../api/itunes';
 import { actions as searchActions } from '../reducers/search.reducer';
 
-function SearchResults({ searchState, dispatch, handleArtistClick }) {
+function SearchResults({ searchState, dispatch }) {
   const { query } = useParams();
+  const navigate = useNavigate();
+
+  const handleArtistClick = (event, artist) => {
+    event.preventDefault();
+    navigate(`/artist/${artist.artistId}`)
+  };
 
   useEffect(() => {
     const getSearchResults = async () => {
@@ -32,7 +38,6 @@ function SearchResults({ searchState, dispatch, handleArtistClick }) {
 
     getSearchResults();
   }, [query]);
-
 
   if (searchState.isLoading) {
     return <p>loading...</p>;

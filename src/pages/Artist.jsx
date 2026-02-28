@@ -5,6 +5,7 @@ import { fetchArtistDiscography } from '../api/itunes';
 function Artist() {
   const { artistId } = useParams();
   const navigate = useNavigate();
+  const [artist, setArtist] = useState(null);
   const [discography, setDiscography] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -23,9 +24,10 @@ function Artist() {
     const getDiscography = async () => {
       try {
         setIsLoading(true);
-
         const res = await fetchArtistDiscography(artistId);
-        const sorted = [...res.results].sort(
+        const [artist, ...albums] = res.results;
+        setArtist(artist)
+        const sorted = [...albums].sort(
           (a, b) => new Date(b.releaseDate) - new Date(a.releaseDate)
         );
         setDiscography(sorted);
@@ -55,7 +57,7 @@ function Artist() {
 
   return (
     <div>
-      <h1>{discography[0].artistName}</h1>
+      <h1>{artist.artistName}</h1>
       {discography.slice(1).map((album) => (
         <div
           key={album.collectionId}

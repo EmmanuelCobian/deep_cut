@@ -64,11 +64,22 @@ export async function fetchArtists(searchQuery) {
 
 /**
  * Get artist metadata from an artistId
- * 
+ *
  * @param {number} artistId - the id for an artist on the iTunes db
  * @returns Object with artist metadata
  */
 export async function fetchArtistDiscography(artistId) {
   const url = `${ITUNES_BASE_URL}/lookup?id=${artistId}&entity=album&limit=200`;
+  return fetchJSON(url);
+}
+
+/**
+ * Get details for an album / collection of music
+ *
+ * @param {number} albumId - The unique ID for the work of music
+ * @returns Object with the album metadata
+ */
+export async function fetchAlbum(albumId) {
+  const url = `${ITUNES_BASE_URL}/lookup?id=${albumId}&entity=song`;
   return fetchJSON(url);
 }

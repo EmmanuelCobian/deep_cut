@@ -7,7 +7,6 @@ function SearchResults({ searchState, dispatch, handleArtistClick }) {
   const { query } = useParams();
 
   useEffect(() => {
-
     const getSearchResults = async () => {
       if (!query || query.length === 0) return;
 
@@ -32,7 +31,12 @@ function SearchResults({ searchState, dispatch, handleArtistClick }) {
     };
 
     getSearchResults();
-  }, [query, dispatch]);
+  }, [query]);
+
+
+  if (searchState.isLoading) {
+    return <p>loading...</p>;
+  }
 
   return (
     <>

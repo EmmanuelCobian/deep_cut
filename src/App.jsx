@@ -16,7 +16,6 @@ function App() {
   const navigate = useNavigate();
 
   const handleSearch = (query) => {
-    dispatch({ type: searchActions.changeSearchQuery, searchQuery: query });
     navigate(`/search/${query}`);
   };
 
@@ -59,10 +58,6 @@ function App() {
         </button>
       </div>
     );
-  }
-
-  if (searchState.isLoading) {
-    return <p>loading...</p>;
   }
 
   if (

@@ -1,36 +1,58 @@
-import { useEffect } from 'react';
-import { useParams } from 'react-router';
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router';
 import { fetchArtistDiscography } from '../api/itunes';
 
-function Artist({ searchState }) {
+function Artist() {
   const { artistId } = useParams();
+  const navigate = useNavigate();
+  const [discography, setDiscography] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const handleErrorClick = (e) => {
+    e.preventDefault();
+    setError('');
+    navigate('/');
+  };
 
   useEffect(() => {
     const getDiscography = async () => {
       try {
-        dispatch({ type: searchActions.fetchDiscography });
-        const discography = await fetchArtistDiscography(artistId);
-        dispatch({
-          type: searchActions.fetchDiscographySuccess,
-          discography: discography.results,
-        });
+        setIsLoading(true);
+
+        const res = await fetchArtistDiscography(artistId);
+        const sorted = [...res.results].sort(
+          (a, b) => new Date(b.releaseDate) - new Date(a.releaseDate)
+        );
+        setDiscography(sorted);
+        setIsLoading(false);
       } catch (error) {
         console.error(`Failed to fetch discography: ${error}`);
-        dispatch({ type: searchActions.fetchDiscographyFailure, error: error });
+        setError(error.message);
+        setIsLoading(false);
       }
     };
 
     getDiscography();
   }, [artistId]);
 
-  if (searchState.isLoading) {
+  if (isLoading) {
     return <p>loading...</p>;
+  }
+
+  if (error) {
+    return (
+      <div>
+        <p>{error}</p>
+        <button onClick={handleErrorClick}>Clear error message</button>
+      </div>
+    );
   }
 
   return (
     <div>
-      <h1>{searchState.artistDiscography[0].artistName}</h1>
-      {searchState.artistDiscography.slice(1).map((album) => (
+      <h1>{discography[0].artistName}</h1>
+      {discography.slice(1).map((album) => (
         <div key={album.collectionId}>
           <p>{album.collectionName}</p>
           <img

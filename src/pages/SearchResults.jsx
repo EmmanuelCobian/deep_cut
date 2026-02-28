@@ -1,15 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { fetchAlbums, fetchArtists } from '../api/itunes';
-import { actions as searchActions } from '../reducers/search.reducer';
 
-function SearchResults({ searchState, dispatch }) {
+function SearchResults() {
   const { query } = useParams();
   const navigate = useNavigate();
+  const [albums, setAlbums] = useState([]);
+  const [artists, setArtists] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleArtistClick = (event, artist) => {
-    event.preventDefault();
-    navigate(`/artist/${artist.artistId}`)
+  const handleArtistClick = (e, artist) => {
+    e.preventDefault();
+    navigate(`/artist/${artist.artistId}`);
+  };
+
+  const handleErrorClick = (e) => {
+    e.preventDefault();
+    setError('');
+    navigate('/');
   };
 
   useEffect(() => {
@@ -17,36 +26,43 @@ function SearchResults({ searchState, dispatch }) {
       if (!query || query.length === 0) return;
 
       try {
-        dispatch({ type: searchActions.fetchSearchResults });
+        setIsLoading(true);
+
         const [albums, artists] = await Promise.all([
           fetchAlbums(query),
           fetchArtists(query),
         ]);
-        dispatch({
-          type: searchActions.fetchSearchResultsSuccess,
-          albums: albums,
-          artists: artists,
-        });
+
+        setAlbums(albums);
+        setArtists(artists);
+        setIsLoading(false);
       } catch (error) {
         console.error(`Failed to fetch music: ${error}`);
-        dispatch({
-          type: searchActions.fetchSearchResultsFailure,
-          error: error,
-        });
+        setError(error.message);
+        setIsLoading(false)
       }
     };
 
     getSearchResults();
   }, [query]);
 
-  if (searchState.isLoading) {
+  if (isLoading) {
     return <p>loading...</p>;
+  }
+
+  if (error) {
+    return (
+      <div>
+        <p>{error}</p>
+        <button onClick={handleErrorClick}>Clear error message</button>
+      </div>
+    );
   }
 
   return (
     <>
       <div>
-        {searchState.artists.map((artist) => (
+        {artists.map((artist) => (
           <div
             key={artist.artistId}
             onClick={(e) => handleArtistClick(e, artist)}
@@ -66,7 +82,7 @@ function SearchResults({ searchState, dispatch }) {
       <hr />
 
       <div>
-        {searchState.albums.map((album) => (
+        {albums.map((album) => (
           <div key={album.collectionId}>
             <p>{album.artistName}</p>
             <p>{album.collectionName}</p>

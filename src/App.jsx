@@ -3,6 +3,7 @@ import Header from './shared/Header';
 import Landing from './pages/Landing';
 import SearchResults from './pages/SearchResults';
 import Artist from './pages/Artist';
+import Album from './pages/Album';
 import './App.css';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/search/:query" element={<SearchResults />} />
         <Route path="/artist/:artistId" element={<Artist />} />
+        <Route path="/album/:albumId" element={<Album />} />
       </Routes>
     </>
   );

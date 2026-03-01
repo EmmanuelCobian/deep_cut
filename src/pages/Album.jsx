@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router';
-import { fetchAlbum } from '../api/itunes';
+import { fetchAlbum } from '../lib/api/itunes';
 
 function Album() {
   const { albumId } = useParams();

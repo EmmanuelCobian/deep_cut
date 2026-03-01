@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router';
-import { fetchAlbums, fetchArtists } from '../api/itunes';
+import { fetchAlbums, fetchArtists } from '../lib/api/itunes';
 
 function SearchResults() {
   const { query } = useParams();

@@ -1,5 +1,6 @@
 import SearchBar from './SearchBar';
 import { useNavigate, useLocation } from 'react-router';
+import styles from './Header.module.css'
 
 function Header() {
   const navigate = useNavigate();
@@ -12,12 +13,12 @@ function Header() {
   };
 
   return (
-    <div>
+    <div className={styles.header}>
+      <h1>Deep Cut</h1>
       <button onClick={() => navigate(-1)} disabled={isHome}>
         &lt;
       </button>
       <SearchBar onSearch={handleSearch} />
-      <h1>Deep Cut</h1>
     </div>
   );
 }

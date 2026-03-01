@@ -42,7 +42,7 @@ function AuthCallback() {
   return (
     <div>
       <h1>Signing you in...</h1>
-      <p>Confirming your magic link, hang tight.</p>
+      <p>Confirming your magic link</p>
     </div>
   );
 }

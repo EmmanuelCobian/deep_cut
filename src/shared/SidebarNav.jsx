@@ -4,9 +4,9 @@ function SidebarNav() {
   return (
     <aside>
       <Link to={'/'}>Home</Link>
-      <Link to={'/'}>Journal</Link>
-      <Link to={'/'}>Listen List</Link>
-      <Link to={'/'}>Account</Link>
+      <Link to={'/journal'}>Journal</Link>
+      <Link to={'/lists'}>Listen List</Link>
+      <Link to={'/account'}>Account</Link>
     </aside>
   );
 }

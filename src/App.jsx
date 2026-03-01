@@ -6,6 +6,9 @@ import Artist from './pages/Artist';
 import Album from './pages/Album';
 import SidebarNav from './shared/SideBarNav';
 import NotFound from './pages/NotFound';
+import AuthGuard from './shared/AuthGuard';
+import Login from './pages/Login';
+import AuthCallback from './pages/AuthCallback';
 import './App.css';
 
 function App() {
@@ -20,6 +23,35 @@ function App() {
             <Route path="/search/:query" element={<SearchResults />} />
             <Route path="/artist/:artistId" element={<Artist />} />
             <Route path="/album/:albumId" element={<Album />} />
+
+            <Route path="/login" element={<Login />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+
+            <Route
+              path="/journal"
+              element={
+                <AuthGuard>
+                  <div>Journal</div>
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/lists"
+              element={
+                <AuthGuard>
+                  <div>Listen Lists</div>
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/account"
+              element={
+                <AuthGuard>
+                  <div>Account</div>
+                </AuthGuard>
+              }
+            />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

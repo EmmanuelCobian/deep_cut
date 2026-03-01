@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router';
 import { fetchAlbums, fetchArtists } from '../lib/api/itunes';
+import ErrorMessage from '../shared/ErrorMessage';
+import Loading from '../shared/Loading';
+import AlbumCard from '../shared/AlbumCard';
+import ArtistCard from '../shared/ArtistCard';
 
 function SearchResults() {
   const { query } = useParams();
@@ -45,34 +49,23 @@ function SearchResults() {
   }, [query]);
 
   if (isLoading) {
-    return <p>loading...</p>;
+    return <Loading />;
   }
 
   if (error) {
-    return (
-      <div>
-        <p>{error}</p>
-        <Link to={'/'}>Go back home</Link>
-      </div>
-    );
+    return <ErrorMessage error={error} />;
   }
 
   return (
     <>
       <div>
+        <h2>Artists</h2>
         {artists.map((artist) => (
           <div
             key={artist.artistId}
             onClick={(e) => handleArtistClick(e, artist)}
           >
-            <p>{artist.artistName}</p>
-            {artist.artwork && (
-              <img
-                src={artist.artwork}
-                alt={`Artwork for ${artist.artistName}`}
-              />
-            )}
-            <hr />
+            <ArtistCard artist={artist} />
           </div>
         ))}
       </div>
@@ -80,18 +73,13 @@ function SearchResults() {
       <hr />
 
       <div>
+        <h2>Albums</h2>
         {albums.map((album) => (
           <div
             key={album.collectionId}
             onClick={() => handleAlbumClick(album.collectionId)}
           >
-            <p>{album.artistName}</p>
-            <p>{album.collectionName}</p>
-            <img
-              src={album.artworkUrl100}
-              alt={`Cover art for ${album.collectionName}`}
-            />
-            <hr />
+            <AlbumCard album={album} />
           </div>
         ))}
       </div>

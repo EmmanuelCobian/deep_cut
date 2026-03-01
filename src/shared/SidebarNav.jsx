@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { useAuth } from '../lib/context/AuthContext';
+import styles from './SidebarNav.module.css';
 
 function SidebarNav() {
   const { user, signOut } = useAuth();
@@ -9,10 +10,7 @@ function SidebarNav() {
       <Link to="/journal">Journal</Link>
       <Link to="/lists">Listen List</Link>
       {user ? (
-        <div>
-          <Link to="/account">Account</Link>
-          <button onClick={signOut}>Log out</button>
-        </div>
+        <button onClick={signOut}>Log out</button>
       ) : (
         <Link to="/login">Log in</Link>
       )}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import supabase from '../lib/utils/supabase'
+import supabase from '../lib/utils/supabase';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -15,7 +15,7 @@ function Login() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${window.location.origin}/`,
       },
     });
 

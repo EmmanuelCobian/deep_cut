@@ -4,18 +4,17 @@ import Landing from './pages/Landing';
 import SearchResults from './pages/SearchResults';
 import Artist from './pages/Artist';
 import Album from './pages/Album';
-import SidebarNav from './shared/SideBarNav';
+import SidebarNav from './shared/SidebarNav';
 import NotFound from './pages/NotFound';
 import AuthGuard from './shared/AuthGuard';
 import Login from './pages/Login';
-import AuthCallback from './pages/AuthCallback';
 import './App.css';
 
 function App() {
   return (
     <>
       <Header />
-      <div>
+      <div className='gridContainer'>
         <SidebarNav />
         <main>
           <Routes>
@@ -25,7 +24,6 @@ function App() {
             <Route path="/album/:albumId" element={<Album />} />
 
             <Route path="/login" element={<Login />} />
-            <Route path="/auth/callback" element={<AuthCallback />} />
 
             <Route
               path="/journal"

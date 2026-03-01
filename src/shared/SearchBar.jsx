@@ -17,9 +17,6 @@ const SearchBar = ({ onSearch }) => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
-      <button disabled={query.trim().length == 0} type="submit">
-        Search
-      </button>
     </form>
   );
 };

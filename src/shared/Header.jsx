@@ -1,11 +1,11 @@
 import SearchBar from './SearchBar';
 import { useNavigate, useLocation } from 'react-router';
-import styles from './Header.module.css'
+import styles from './Header.module.css';
 
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-
+  
   const isHome = location.pathname === '/';
 
   const handleSearch = (query) => {
@@ -14,11 +14,16 @@ function Header() {
 
   return (
     <div className={styles.header}>
-      <h1>Deep Cut</h1>
-      <button onClick={() => navigate(-1)} disabled={isHome}>
-        &lt;
+      <button
+        className={styles.backButton}
+        onClick={() => navigate(-1)}
+        disabled={isHome}
+      >
+        ←
       </button>
-      <SearchBar onSearch={handleSearch} />
+      <div className={styles.searchWrapper}>
+        <SearchBar onSearch={handleSearch} />
+      </div>
     </div>
   );
 }

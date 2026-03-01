@@ -1,9 +1,19 @@
 :root {
-  color: black;
-  background-color: white;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --bg-primary: #fafaf8;
+  --bg-secondary: #f0efe9;
+  --bg-elevated: #ffffff;
+  --text-primary: #1a1a18;
+  --text-secondary: #6b6a65;
+  --text-muted: #a8a79f;
+  --accent: #c84b31;
+  --accent-subtle: #f5e9e6;
+  --border: #e2e1da;
+
+  color: black;
+  background-color: var(--bg-primary);
 }

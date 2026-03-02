@@ -1,0 +1,190 @@
+.page {
+  padding: 40px;
+}
+
+.header {
+  display: flex;
+  gap: 32px;
+  align-items: end;
+  margin-bottom: 40px;
+}
+
+.cover {
+  width: 240px;
+  height: 240px;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.albumMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.type {
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.meta {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.actionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.leftActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.statusBadge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 50px;
+  text-transform: uppercase;
+}
+
+.unplayed {
+  background-color: var(--bg-elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.listening {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.listened {
+  background-color: var(--status-listened-bg);
+  color: var(--status-listened-text);
+  border: 1px solid var(--status-listened-border);
+}
+
+.iconButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.iconButton:hover {
+  background-color: var(--bg-elevated);
+}
+
+.iconButton img {
+  width: 18px;
+  height: 18px;
+}
+
+.primaryButton {
+  padding: 8px 16px;
+  border-radius: 50px;
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+  border: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  justify-self: start;
+}
+
+.primaryButton:hover {
+  opacity: 0.9;
+}
+
+.trackList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.trackHeader {
+  display: grid;
+  grid-template-columns: 40px 1fr 80px;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  padding: 0 12px 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.trackRow {
+  display: grid;
+  grid-template-columns: 40px 1fr 80px;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+}
+
+.trackRow:hover {
+  background-color: var(--bg-elevated);
+}
+
+.trackNumber {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.trackInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.trackName {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.trackArtist {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.duration {
+  text-align: center;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.explicit {
+  display: inline-block;
+  background-color: var(--text-secondary);
+  color: var(--bg-primary);
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 1px 5px 0 5px;
+  border-radius: 3px;
+  margin-right: 6px;
+}

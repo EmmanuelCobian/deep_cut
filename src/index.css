@@ -13,6 +13,9 @@
   --accent: #c84b31;
   --accent-subtle: #f5e9e6;
   --border: #e2e1da;
+  --status-listened-bg: #eceee6;
+  --status-listened-text: #5a6642;
+  --status-listened-border: #d4d9c8;
 
   color: black;
   background-color: var(--bg-primary);

@@ -1,15 +1,28 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router';
+import { useEffect, useState, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router';
 import { fetchArtistDiscography } from '../lib/api/itunes';
 import AlbumCard from '../shared/AlbumCard';
+import Loading from '../shared/Loading';
+import ErrorMessage from '../shared/ErrorMessage';
+import styles from './Artist.module.css';
 
 function Artist() {
   const { artistId } = useParams();
   const navigate = useNavigate();
   const [artist, setArtist] = useState(null);
   const [discography, setDiscography] = useState([]);
+  const [filter, setFilter] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const determineCollectionType = (collection) => {
+    const tracks = collection.trackCount;
+    if (tracks <= 6) {
+      return 'singles';
+    } else {
+      return 'albums';
+    }
+  };
 
   const handleAlbumClick = (albumId) => {
     navigate(`/album/${albumId}`);
@@ -37,32 +50,59 @@ function Artist() {
     getDiscography();
   }, [artistId]);
 
+  const filteredDiscography = useMemo(() => {
+    if (filter === 'all') return discography;
+
+    return discography.filter(
+      (collection) => determineCollectionType(collection) === filter
+    );
+  }, [discography, filter]);
+
   if (isLoading) {
-    return <p>loading...</p>;
+    return <Loading />;
   }
 
   if (error) {
-    return (
-      <div>
-        <p>{error}</p>
-        <Link to={'/'}>Go back home</Link>
-      </div>
-    );
+    return <ErrorMessage error={error} />;
   }
 
   return (
-    <div>
+    <div className={styles.artistContainer}>
       <h1>{artist.artistName}</h1>
-      {discography.slice(1).map((album) => (
-        <div
-          key={album.collectionId}
+
+      <div className={styles.pillContainer}>
+        <button
+          className={`${styles.pill} ${filter === 'all' ? styles.active : ''}`}
+          onClick={() => setFilter('all')}
         >
-          <AlbumCard
-            album={album}
-            onAlbumClick={() => handleAlbumClick(album.collectionId)}
-          />
-        </div>
-      ))}
+          All
+        </button>
+
+        <button
+          className={`${styles.pill} ${filter === 'albums' ? styles.active : ''}`}
+          onClick={() => setFilter('albums')}
+        >
+          Albums
+        </button>
+
+        <button
+          className={`${styles.pill} ${filter === 'singles' ? styles.active : ''}`}
+          onClick={() => setFilter('singles')}
+        >
+          Singles & EPs
+        </button>
+      </div>
+
+      <div className={styles.albumContainer}>
+        {filteredDiscography.slice(1).map((album) => (
+          <div key={album.collectionId}>
+            <AlbumCard
+              album={album}
+              onAlbumClick={() => handleAlbumClick(album.collectionId)}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,15 +1,24 @@
 import styles from './AlbumCard.module.css';
 
-function AlbumCard({ album }) {
+function AlbumCard({ album, onAlbumClick }) {
+  const releaseYear = album.releaseDate.split('-')[0];
+
   return (
-    <div>
-      <img
-        src={album.artworkUrl100}
-        alt={`Cover art for ${album.collectionName}`}
-      />
-      <p>{album.artistName}</p>
-      <p>{album.collectionName}</p>
-      <hr />
+    <div className={styles.card} onClick={onAlbumClick}>
+      <div className={styles.imageWrapper}>
+        <img
+          src={album.artworkUrl100.replace('100x100', '600x600')}
+          alt={`Cover art for ${album.collectionName}`}
+          className={styles.image}
+        />
+      </div>
+
+      <div className={styles.textContainer}>
+        <p className={styles.title}>{album.collectionName}</p>
+        <p className={styles.meta}>
+          {releaseYear} • {album.artistName}
+        </p>
+      </div>
     </div>
   );
 }

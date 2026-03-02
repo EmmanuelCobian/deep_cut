@@ -45,7 +45,6 @@ function Album() {
         const [header, ...rest] = res.results;
         setAlbum({ ...header, runtime: getAlbumRuntime(rest) });
         setSongs(rest);
-        console.log(rest);
         setIsLoading(false);
       } catch (error) {
         console.error(`Failed to fetch discography: ${error}`);
@@ -98,7 +97,7 @@ function Album() {
         </thead>
         <tbody>
           {songs.map((song, idx) => (
-            <tr key={songs.trackId}>
+            <tr key={song.trackId}>
               <td>{idx + 1}</td>
               <td>
                 <p>{song.trackName}</p>

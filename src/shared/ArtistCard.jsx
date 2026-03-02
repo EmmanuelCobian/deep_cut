@@ -1,16 +1,23 @@
 import styles from './ArtistCard.module.css';
 import profilePic from '../assets/default_artist_pic.webp';
 
-function ArtistCard({ artist }) {
+function ArtistCard({ artist, onArtistClick }) {
+  const imageSrc = artist.artwork || profilePic;
+
   return (
-    <div className={styles.cardContainer}>
-      {artist.artwork ? (
-        <img src={artist.artwork} alt={`Artwork for ${artist.artistName}`} />
-      ) : (
-        <img src={profilePic} alt="Default profile picture" />
-      )}
-      <p>{artist.artistName}</p>
-      <p>Artist</p>
+    <div className={styles.card} onClick={onArtistClick}>
+      <div className={styles.imageWrapper}>
+        <img
+          src={imageSrc}
+          alt={`Artwork for ${artist.artistName}`}
+          className={styles.image}
+        />
+      </div>
+
+      <div className={styles.textContainer}>
+        <p className={styles.name}>{artist.artistName}</p>
+        <p className={styles.type}>Artist</p>
+      </div>
     </div>
   );
 }

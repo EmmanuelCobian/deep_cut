@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { fetchArtistDiscography } from '../lib/api/itunes';
+import AlbumCard from '../shared/AlbumCard';
 
 function Artist() {
   const { artistId } = useParams();
@@ -20,7 +21,7 @@ function Artist() {
         setIsLoading(true);
         const res = await fetchArtistDiscography(artistId);
         const [artist, ...albums] = res.results;
-        setArtist(artist)
+        setArtist(artist);
         const sorted = [...albums].sort(
           (a, b) => new Date(b.releaseDate) - new Date(a.releaseDate)
         );
@@ -55,14 +56,11 @@ function Artist() {
       {discography.slice(1).map((album) => (
         <div
           key={album.collectionId}
-          onClick={() => handleAlbumClick(album.collectionId)}
         >
-          <p>{album.collectionName}</p>
-          <img
-            src={album.artworkUrl100}
-            alt={`Cover art for ${album.collectionName}`}
+          <AlbumCard
+            album={album}
+            onAlbumClick={() => handleAlbumClick(album.collectionId)}
           />
-          <hr />
         </div>
       ))}
     </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams, Link } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { fetchAlbums, fetchArtists } from '../lib/api/itunes';
 import ErrorMessage from '../shared/ErrorMessage';
 import Loading from '../shared/Loading';
@@ -14,8 +14,7 @@ function SearchResults() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleArtistClick = (e, artist) => {
-    e.preventDefault();
+  const handleArtistClick = (artist) => {
     navigate(`/artist/${artist.artistId}`);
   };
 
@@ -56,30 +55,39 @@ function SearchResults() {
     return <ErrorMessage error={error} />;
   }
 
+  if (artists.length == 0 && albums.length == 0) {
+    return (
+      <div>
+        <p>{`No results found for: ${query}`}</p>
+        <p>Please try again with a different query</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <div>
-        <h2>Artists</h2>
+        {artists.length > 0 && <h2>Artists</h2>}
         {artists.map((artist) => (
           <div
             key={artist.artistId}
-            onClick={(e) => handleArtistClick(e, artist)}
           >
-            <ArtistCard artist={artist} />
+            <ArtistCard
+              artist={artist}
+              onArtistClick={() => handleArtistClick(artist)}
+            />
           </div>
         ))}
       </div>
 
-      <hr />
-
       <div>
         <h2>Albums</h2>
         {albums.map((album) => (
-          <div
-            key={album.collectionId}
-            onClick={() => handleAlbumClick(album.collectionId)}
-          >
-            <AlbumCard album={album} />
+          <div key={album.collectionId}>
+            <AlbumCard
+              album={album}
+              onAlbumClick={() => handleAlbumClick(album.collectionId)}
+            />
           </div>
         ))}
       </div>

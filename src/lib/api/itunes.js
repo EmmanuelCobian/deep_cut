@@ -57,7 +57,7 @@ export async function fetchArtists(searchQuery) {
 
     return {
       ...artist,
-      artwork: album?.artworkUrl100?.replace('100x100', '300x300'),
+      artwork: album?.artworkUrl100?.replace('100x100', '400x400'),
     };
   });
 }

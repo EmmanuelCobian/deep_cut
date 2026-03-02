@@ -5,6 +5,7 @@ import ErrorMessage from '../shared/ErrorMessage';
 import Loading from '../shared/Loading';
 import AlbumCard from '../shared/AlbumCard';
 import ArtistCard from '../shared/ArtistCard';
+import styles from './SearchResults.module.css';
 
 function SearchResults() {
   const { query } = useParams();
@@ -66,12 +67,10 @@ function SearchResults() {
 
   return (
     <>
-      <div>
-        {artists.length > 0 && <h2>Artists</h2>}
+      {artists.length > 0 && <h2>Artists</h2>}
+      <div className={styles.artistCardContainer}>
         {artists.map((artist) => (
-          <div
-            key={artist.artistId}
-          >
+          <div key={artist.artistId}>
             <ArtistCard
               artist={artist}
               onArtistClick={() => handleArtistClick(artist)}
@@ -80,8 +79,8 @@ function SearchResults() {
         ))}
       </div>
 
-      <div>
-        <h2>Albums</h2>
+      <h2>Albums</h2>
+      <div className={styles.albumCardContainer}>
         {albums.map((album) => (
           <div key={album.collectionId}>
             <AlbumCard

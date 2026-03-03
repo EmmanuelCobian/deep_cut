@@ -60,14 +60,15 @@ function Album() {
 
     try {
       if (!bookmarked) {
-        await insertListenList(user, album);
         setBookmarked(true);
+        await insertListenList(user, album);
       } else {
-        await deleteListenList(user, album);
         setBookmarked(false);
+        await deleteListenList(user, album);
       }
     } catch (error) {
       console.error(`Bookmark toggle failed: ${error}`);
+      setBookmarked(!bookmark)
     }
   };
 

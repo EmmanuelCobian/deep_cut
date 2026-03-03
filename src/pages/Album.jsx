@@ -120,7 +120,7 @@ function Album() {
   }
 
   return (
-    <div className={styles.page}>
+    <div>
       <div className={styles.header}>
         <img
           className={styles.cover}

@@ -19,7 +19,19 @@ async function fetchJSON(url) {
  * @returns List of objects where each element is the metadata for an album
  */
 export async function fetchAlbums(searchQuery) {
-  const url = `${ITUNES_BASE_URL}/search?term=${encodeURIComponent(searchQuery)}&media=music&entity=album&limit=100`;
+  const url = `${ITUNES_BASE_URL}/search?term=${encodeURIComponent(searchQuery)}&media=music&entity=album&limit=15`;
+  const res = await fetchJSON(url);
+  return res.results;
+}
+
+/**
+ * Get song metadata from a user's search query
+ * 
+ * @param {StorageManager} searchQuery - the uer's search query
+ * @returns List of objects where each element is the metadata for a song
+ */
+export async function fetchSongs(searchQuery) {
+  const url = `${ITUNES_BASE_URL}/search?term=${encodeURIComponent(searchQuery)}&media=music&entity=song&limit=15`;
   const res = await fetchJSON(url);
   return res.results;
 }

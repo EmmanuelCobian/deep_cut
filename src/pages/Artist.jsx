@@ -94,7 +94,7 @@ function Artist() {
       </div>
 
       <div className={styles.albumContainer}>
-        {filteredDiscography.slice(1).map((album) => (
+        {filteredDiscography.map((album) => (
           <div key={album.collectionId}>
             <AlbumCard
               album={album}

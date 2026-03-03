@@ -27,7 +27,8 @@ function Album() {
   const [listeningState, setListeningState] = useState(
     LISTENING_STATES.UNPLAYED
   );
-  const [isLoading, setIsLoading] = useState(true);
+  const [albumLoading, setAlbumLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState('');
   const { user, loading: userLoading } = useAuth();
 
@@ -75,17 +76,17 @@ function Album() {
       if (!user || userLoading) return;
 
       try {
-        setIsLoading(true);
+        setListLoading(true);
         const listenList = await fetchListenList(user);
         const isBookmarked = listenList.some(
           (item) => item.album_id === albumId
         );
         setBookmarked(isBookmarked);
-        setIsLoading(false);
+        setListLoading(false);
       } catch (error) {
         console.error(`Failed to fetch listening list: ${error}`);
         setError(error.message);
-        setIsLoading(false);
+        setListLoading(false);
       }
     };
 
@@ -95,23 +96,23 @@ function Album() {
   useEffect(() => {
     const getAlbum = async () => {
       try {
-        setIsLoading(true);
+        setAlbumLoading(true);
         const res = await fetchAlbum(albumId);
         const [header, ...rest] = res.results;
         setAlbum({ ...header, runtime: getAlbumRuntime(rest) });
         setSongs(rest);
-        setIsLoading(false);
+        setAlbumLoading(false);
       } catch (error) {
         console.error(`Failed to fetch album: ${error}`);
         setError(error.message);
-        setIsLoading(false);
+        setAlbumLoading(false);
       }
     };
 
     getAlbum();
   }, [albumId]);
 
-  if (isLoading) return <Loading />;
+  if (albumLoading || listLoading) return <Loading />;
 
   if (error) {
     return <ErrorMessage error={error} />;

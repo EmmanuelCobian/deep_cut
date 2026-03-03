@@ -1,11 +1,17 @@
-import { useEffect, useState, useMemo } from 'react';
-import { useParams, Link } from 'react-router';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import { useAuth } from '../lib/context/AuthContext';
 import { fetchAlbum } from '../lib/api/itunes';
 import Loading from '../shared/Loading';
 import ErrorMessage from '../shared/ErrorMessage';
 import styles from './Album.module.css';
 import bookmark from '../assets/bookmark.svg';
 import bookmarkCheckFill from '../assets/bookmark-check-fill.svg';
+import {
+  deleteListenList,
+  fetchListenList,
+  insertListenList,
+} from '../lib/utils/supabase';
 
 const LISTENING_STATES = {
   UNPLAYED: 'Unplayed',
@@ -23,6 +29,7 @@ function Album() {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const { user, loading: userLoading } = useAuth();
 
   const msToHoursMinutes = (milliseconds) => {
     const totalMinutes = Math.floor(milliseconds / (1000 * 60));
@@ -47,9 +54,43 @@ function Album() {
     return msToHoursMinutes(total);
   };
 
-  const handleBookmarkClick = () => {
-    setBookmarked(!bookmarked);
+  const handleBookmarkClick = async () => {
+    if (!user) return;
+
+    try {
+      if (!bookmarked) {
+        await insertListenList(user, album);
+        setBookmarked(true);
+      } else {
+        await deleteListenList(user, album);
+        setBookmarked(false);
+      }
+    } catch (error) {
+      console.error(`Bookmark toggle failed: ${error}`);
+    }
   };
+
+  useEffect(() => {
+    const getListenList = async () => {
+      if (!user || userLoading) return;
+
+      try {
+        setIsLoading(true);
+        const listenList = await fetchListenList(user);
+        const isBookmarked = listenList.some(
+          (item) => item.album_id === albumId
+        );
+        setBookmarked(isBookmarked);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(`Failed to fetch listening list: ${error}`);
+        setError(error.message);
+        setIsLoading(false);
+      }
+    };
+
+    getListenList();
+  }, [user, userLoading]);
 
   useEffect(() => {
     const getAlbum = async () => {

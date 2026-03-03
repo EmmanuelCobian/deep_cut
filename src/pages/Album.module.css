@@ -44,6 +44,15 @@
   color: var(--text-secondary);
 }
 
+.meta a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.meta a:hover {
+  text-decoration: underline;
+}
+
 .actionBar {
   display: flex;
   align-items: center;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams, Link } from 'react-router';
 import { useAuth } from '../lib/context/AuthContext';
 import { fetchAlbum } from '../lib/api/itunes';
 import Loading from '../shared/Loading';
@@ -132,7 +132,7 @@ function Album() {
           <p className={styles.type}>Album</p>
           <h1 className={styles.title}>{album.collectionName}</h1>
           <p className={styles.meta}>
-            {album.artistName} • {getYear(album.releaseDate)} •{' '}
+            <Link to={`/artist/${album.artistId}`}>{album.artistName}</Link> • {getYear(album.releaseDate)} •{' '}
             {album.trackCount} songs • {album.runtime}
           </p>
         </div>

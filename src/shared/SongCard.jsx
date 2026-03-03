@@ -14,10 +14,7 @@ function SongCard({ song, onSongClick }) {
       <div className={styles.textContainer}>
         <p className={styles.title}>{song.trackName}</p>
         <p className={styles.meta}>
-          {song.contentAdvisoryRating === 'Explicit' && (
-            <span className={styles.explicit}>E</span>
-          )}
-          {song.artistName}
+          Song • {song.artistName}
         </p>
       </div>
     </div>

@@ -2,31 +2,93 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.875rem 1.5rem;
+  padding: 1rem 2rem;
   background-color: var(--bg-secondary);
 }
 
-.backButton {
-  background: none;
-  border: none;
-  padding: 0.25rem;
-  margin: 0;
+.leftSection {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.logo {
+  color: var(--text-primary);
+  font-weight: 700;
   font-size: 1.25rem;
+  text-decoration: none;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .backButton:hover:not(:disabled) {
+  background: var(--bg-elevated);
   color: var(--text-primary);
 }
 
 .backButton:disabled {
-  color: var(--text-muted);
+  opacity: 0.4;
   cursor: default;
 }
 
-.searchWrapper {
-  max-width: 480px;
+.middleSection {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+}
+
+.navLinks a:hover {
+  color: var(--text-primary);
+}
+
+.authButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 6px 14px;
+  border-radius: 50px;
+  text-decoration: none;
+  background: var(--text-primary);
+  color: var(--bg-secondary);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.authButton:hover {
+  opacity: 0.9;
 }

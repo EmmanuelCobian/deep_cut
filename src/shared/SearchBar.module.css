@@ -1,0 +1,33 @@
+.searchForm {
+  width: 100%;
+  max-width: 480px;
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  background: var(--bg-elevated);
+  border-radius: 50px;
+
+  padding: 0 1rem 0 2.5rem;
+  transition: all 0.2s ease;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.9rem;
+  pointer-events: none;
+}
+
+.searchWrapper input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}

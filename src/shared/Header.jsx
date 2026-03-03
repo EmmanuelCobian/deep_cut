@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import SearchBar from './SearchBar';
 import { useNavigate, useLocation, Link } from 'react-router';
 import { useAuth } from '../lib/context/AuthContext';
 import styles from './Header.module.css';
+import ArrowLeftIcon from '../assets/arrow-left.svg'
 
 function Header() {
   const { user, signOut } = useAuth();
@@ -22,7 +24,7 @@ function Header() {
           onClick={() => navigate(-1)}
           disabled={isHome}
         >
-          ←
+          <img src={ArrowLeftIcon}/>
         </button>
 
         <Link to="/" replace className={styles.logo}>

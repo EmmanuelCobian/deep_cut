@@ -1,24 +1,17 @@
-.searchForm {
-  width: 100%;
-  max-width: 480px;
-}
-
 .searchWrapper {
-  position: relative;
   display: flex;
   align-items: center;
+  justify-items: start;
+  gap: 12px;
   width: 100%;
   height: 40px;
   background: var(--bg-elevated);
   border-radius: 50px;
-
-  padding: 0 1rem 0 2.5rem;
+  padding-left: 1rem;
   transition: all 0.2s ease;
 }
 
 .searchIcon {
-  position: absolute;
-  left: 0.9rem;
   pointer-events: none;
 }
 

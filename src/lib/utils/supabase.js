@@ -5,6 +5,12 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+/**
+ * Get a user's listen list
+ * 
+ * @param {Object} user - the user object returned by auth context
+ * @returns list of db entries for a user's listen list, empty if none
+ */
 export const fetchListenList = async (user) => {
   const { data: listen_list, error } = await supabase
     .from('listen_list')
@@ -15,6 +21,12 @@ export const fetchListenList = async (user) => {
   return listen_list;
 };
 
+/**
+ * Insert an album into a user's listen list
+ * 
+ * @param {Object} user - the user object returned by auth context
+ * @param {Object} album - the album object returned by iTunes API
+ */
 export const insertListenList = async (user, album) => {
   const { error } = await supabase.from('listen_list').insert([
     {
@@ -29,6 +41,12 @@ export const insertListenList = async (user, album) => {
   if (error) throw error;
 };
 
+/**
+ * Remove an album from a user's listen list
+ * 
+ * @param {Object} user - the user object returned by auth context
+ * @param {Object} album - the album object returned by iTunes API
+ */
 export const deleteListenList = async (user, album) => {
   const { error } = await supabase
     .from('listen_list')

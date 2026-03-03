@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { fetchAlbums, fetchArtists } from '../lib/api/itunes';
+import { fetchAlbums, fetchArtists, fetchSongs } from '../lib/api/itunes';
 import ErrorMessage from '../shared/ErrorMessage';
 import Loading from '../shared/Loading';
 import AlbumCard from '../shared/AlbumCard';
 import ArtistCard from '../shared/ArtistCard';
+import SongCard from '../shared/SongCard';
 import styles from './SearchResults.module.css';
 
 function SearchResults() {
@@ -12,6 +13,7 @@ function SearchResults() {
   const navigate = useNavigate();
   const [albums, setAlbums] = useState([]);
   const [artists, setArtists] = useState([]);
+  const [songs, setSongs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -23,6 +25,10 @@ function SearchResults() {
     navigate(`/album/${albumId}`);
   };
 
+  const handleSongClick = (songId) => {
+    navigate(`/song/${songId}`);
+  };
+
   useEffect(() => {
     const getSearchResults = async () => {
       if (!query || query.length === 0) return;
@@ -30,13 +36,15 @@ function SearchResults() {
       try {
         setIsLoading(true);
 
-        const [albums, artists] = await Promise.all([
+        const [albums, artists, songs] = await Promise.all([
           fetchAlbums(query),
           fetchArtists(query),
+          fetchSongs(query),
         ]);
 
         setAlbums(albums);
         setArtists(artists);
+        setSongs(songs);
         setIsLoading(false);
       } catch (error) {
         console.error(`Failed to fetch music: ${error}`);
@@ -74,6 +82,18 @@ function SearchResults() {
             <ArtistCard
               artist={artist}
               onArtistClick={() => handleArtistClick(artist)}
+            />
+          </div>
+        ))}
+      </div>
+
+      <h2>Songs</h2>
+      <div className={styles.albumCardContainer}>
+        {songs.map((song) => (
+          <div key={song.trackId}>
+            <SongCard
+              song={song}
+              onSongClick={() => handleSongClick(song.trackId)}
             />
           </div>
         ))}

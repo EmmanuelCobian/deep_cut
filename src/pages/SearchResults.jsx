@@ -6,6 +6,7 @@ import Loading from '../shared/Loading';
 import AlbumCard from '../shared/AlbumCard';
 import ArtistCard from '../shared/ArtistCard';
 import SongCard from '../shared/SongCard';
+import { normalizeSong, normalizeAlbum } from '../lib/utils/utils';
 import styles from './SearchResults.module.css';
 
 function SearchResults() {
@@ -92,7 +93,7 @@ function SearchResults() {
         {songs.map((song) => (
           <div key={song.trackId}>
             <SongCard
-              song={song}
+              song={normalizeSong(song)}
               onSongClick={() => handleSongClick(song.trackId)}
             />
           </div>
@@ -104,7 +105,7 @@ function SearchResults() {
         {albums.map((album) => (
           <div key={album.collectionId}>
             <AlbumCard
-              album={album}
+              album={normalizeAlbum(album)}
               onAlbumClick={() => handleAlbumClick(album.collectionId)}
             />
           </div>

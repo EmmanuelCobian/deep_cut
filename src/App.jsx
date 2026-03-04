@@ -8,6 +8,7 @@ import Song from './pages/Song';
 import NotFound from './pages/NotFound';
 import AuthGuard from './shared/AuthGuard';
 import Login from './pages/Login';
+import ListenList from './pages/ListenList';
 import './App.css';
 
 function App() {
@@ -36,7 +37,7 @@ function App() {
             path="/lists"
             element={
               <AuthGuard>
-                <div>Listen Lists</div>
+                <ListenList />
               </AuthGuard>
             }
           />

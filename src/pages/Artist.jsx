@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { fetchArtistDiscography } from '../lib/api/itunes';
+import { normalizeAlbum } from '../lib/utils/utils';
 import AlbumCard from '../shared/AlbumCard';
 import Loading from '../shared/Loading';
 import ErrorMessage from '../shared/ErrorMessage';
@@ -97,7 +98,7 @@ function Artist() {
         {filteredDiscography.map((album) => (
           <div key={album.collectionId}>
             <AlbumCard
-              album={album}
+              album={normalizeAlbum(album)}
               onAlbumClick={() => handleAlbumClick(album.collectionId)}
             />
           </div>

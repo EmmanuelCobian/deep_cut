@@ -7,7 +7,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 /**
  * Get a user's listen list
- * 
+ *
  * @param {Object} user - the user object returned by auth context
  * @returns list of db entries for a user's listen list, empty if none
  */
@@ -22,19 +22,22 @@ export const fetchListenList = async (user) => {
 };
 
 /**
- * Insert an album into a user's listen list
- * 
+ * Insert a song or album into a user's listen list
+ *
  * @param {Object} user - the user object returned by auth context
- * @param {Object} album - the album object returned by iTunes API
+ * @param {string} type - the type of media (song or album)
+ * @param {Object} media - the media object returned by iTunes API
  */
-export const insertListenList = async (user, album) => {
+export const insertListenList = async (user, type, media) => {
   const { error } = await supabase.from('listen_list').insert([
     {
       user_id: user.id,
-      album_id: album.collectionId,
-      album_title: album.collectionName,
-      artist_name: album.artistName,
-      artwork_url: album.artworkUrl100,
+      media_id: type === 'album' ? media.collectionId : media.trackId,
+      media_title: media.collectionName,
+      media_release_date: media.releaseDate,
+      media_type: type,
+      artist_name: media.artistName,
+      artwork_url: media.artworkUrl100,
     },
   ]);
 
@@ -42,17 +45,18 @@ export const insertListenList = async (user, album) => {
 };
 
 /**
- * Remove an album from a user's listen list
- * 
+ * Remove a song or album from a user's listen list
+ *
  * @param {Object} user - the user object returned by auth context
- * @param {Object} album - the album object returned by iTunes API
+ * @param {string} type - the type of media (song or album)
+ * @param {Object} media - the media object returned by iTunes API
  */
-export const deleteListenList = async (user, album) => {
+export const deleteListenList = async (user, type, media) => {
   const { error } = await supabase
     .from('listen_list')
     .delete()
     .eq('user_id', user.id)
-    .eq('album_id', album.collectionId);
+    .eq('media_id', type === 'album' ? media.collectionId : media.trackId);
 
   if (error) throw error;
 };

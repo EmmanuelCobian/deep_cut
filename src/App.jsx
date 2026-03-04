@@ -4,6 +4,7 @@ import Landing from './pages/Landing';
 import SearchResults from './pages/SearchResults';
 import Artist from './pages/Artist';
 import Album from './pages/Album';
+import Song from './pages/Song';
 import NotFound from './pages/NotFound';
 import AuthGuard from './shared/AuthGuard';
 import Login from './pages/Login';
@@ -19,6 +20,7 @@ function App() {
           <Route path="/search/:query" element={<SearchResults />} />
           <Route path="/artist/:artistId" element={<Artist />} />
           <Route path="/album/:albumId" element={<Album />} />
+          <Route path="/song/:songId" element={<Song />} />
 
           <Route path="/login" element={<Login />} />
 

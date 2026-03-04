@@ -95,3 +95,8 @@ export async function fetchAlbum(albumId) {
   const url = `${ITUNES_BASE_URL}/lookup?id=${albumId}&entity=song`;
   return fetchJSON(url);
 }
+
+export async function fetchSong(songId) {
+  const url = `${ITUNES_BASE_URL}/lookup?id=${songId}&entity=song`;
+  return fetchJSON(url);
+}

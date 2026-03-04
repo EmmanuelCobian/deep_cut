@@ -64,10 +64,10 @@ function SearchResults() {
     return <ErrorMessage error={error} />;
   }
 
-  if (artists.length == 0 && albums.length == 0) {
+  if (artists.length == 0 && albums.length == 0 && songs.length == 0) {
     return (
       <div>
-        <p>{`No results found for: ${query}`}</p>
+        <p>{`No results found for "${query}"`}</p>
         <p>Please try again with a different query</p>
       </div>
     );

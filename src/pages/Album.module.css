@@ -133,20 +133,19 @@
   gap: 4px;
 }
 
-.trackHeader {
+.trackHeader,
+.trackRow {
   display: grid;
-  grid-template-columns: 40px 1fr 80px;
-  font-size: 1rem;
-  color: var(--text-secondary);
+  grid-template-columns: 40px 1fr 80px 80px 36px;
   padding: 0 12px 8px 12px;
+}
+
+.trackHeader {
+  color: var(--text-secondary);
   border-bottom: 1px solid var(--border);
 }
 
 .trackRow {
-  display: grid;
-  grid-template-columns: 40px 1fr 80px;
-  align-items: center;
-  padding: 8px 12px;
   border-radius: 8px;
   transition: background-color 0.15s ease;
 }
@@ -157,7 +156,6 @@
 
 .trackNumber {
   color: var(--text-secondary);
-  font-size: 1rem;
 }
 
 .trackInfo {
@@ -167,7 +165,6 @@
 
 .trackName {
   margin: 0;
-  font-size: 1rem;
   color: var(--text-primary);
 }
 
@@ -177,9 +174,13 @@
   color: var(--text-secondary);
 }
 
+.trackRating {
+  color: var(--text-secondary);
+  text-align: center;
+}
+
 .duration {
   text-align: center;
-  font-size: 1rem;
   color: var(--text-secondary);
 }
 
@@ -192,4 +193,26 @@
   padding: 1px 5px 0 5px;
   border-radius: 3px;
   margin-right: 6px;
+}
+
+.trackLink {
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.trackLink img {
+  width: 16px;
+  height: 16px;
+}
+
+.trackRow:hover .trackLink {
+  opacity: 1;
+}
+
+.trackLink:hover {
+  transform: translate(2px, -2px);
 }

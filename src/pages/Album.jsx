@@ -7,10 +7,12 @@ import ErrorMessage from '../shared/ErrorMessage';
 import styles from './Album.module.css';
 import bookmark from '../assets/bookmark.svg';
 import bookmarkCheckFill from '../assets/bookmark-check-fill.svg';
+import arrowUpRight from '../assets/arrow-up-right.svg';
 import {
   deleteListenList,
   fetchListenList,
   insertListenList,
+  fetchALbumRating,
 } from '../lib/utils/supabase';
 
 const LISTENING_STATES = {
@@ -21,6 +23,7 @@ const LISTENING_STATES = {
 
 function Album() {
   const { albumId } = useParams();
+  const [albumRating, setAlbumRating] = useState(null);
   const [album, setAlbum] = useState(null);
   const [songs, setSongs] = useState([]);
   const [bookmarked, setBookmarked] = useState(false);
@@ -28,6 +31,7 @@ function Album() {
     LISTENING_STATES.UNPLAYED
   );
   const [albumLoading, setAlbumLoading] = useState(true);
+  const [albumRatingLoading, setAlbumRatingLoading] = useState(true);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState('');
   const { user, loading: userLoading } = useAuth();
@@ -68,7 +72,7 @@ function Album() {
       }
     } catch (error) {
       console.error(`Bookmark toggle failed: ${error}`);
-      setBookmarked(!bookmark)
+      setBookmarked(!bookmark);
     }
   };
 
@@ -95,6 +99,25 @@ function Album() {
   }, [user, userLoading]);
 
   useEffect(() => {
+    const getAlbumRating = async () => {
+      if (!user || userLoading || !album) return;
+
+      try {
+        setAlbumRatingLoading(true);
+        const rating = await fetchALbumRating(user.id, album.collectionId);
+        console.log(rating);
+        setAlbumRatingLoading(false);
+      } catch (error) {
+        console.error(`Failed to fetch album rating: ${error}`);
+        setError(error.message);
+        setAlbumRatingLoading(false);
+      }
+    };
+
+    getAlbumRating();
+  }, [user, userLoading, album]);
+
+  useEffect(() => {
     const getAlbum = async () => {
       try {
         setAlbumLoading(true);
@@ -113,7 +136,7 @@ function Album() {
     getAlbum();
   }, [albumId]);
 
-  if (albumLoading || listLoading) return <Loading />;
+  if (albumLoading || listLoading || albumRatingLoading) return <Loading />;
 
   if (error) {
     return <ErrorMessage error={error} />;
@@ -132,8 +155,9 @@ function Album() {
           <p className={styles.type}>Album</p>
           <h1 className={styles.title}>{album.collectionName}</h1>
           <p className={styles.meta}>
-            <Link to={`/artist/${album.artistId}`}>{album.artistName}</Link> • {getYear(album.releaseDate)} •{' '}
-            {album.trackCount} songs • {album.runtime}
+            <Link to={`/artist/${album.artistId}`}>{album.artistName}</Link> •{' '}
+            {getYear(album.releaseDate)} • {album.trackCount} songs •{' '}
+            {album.runtime}
           </p>
         </div>
       </div>
@@ -165,7 +189,8 @@ function Album() {
         <div className={styles.trackHeader}>
           <span>#</span>
           <span>Title</span>
-          <span className={styles.durationHeader}>Duration</span>
+          <span>Rating</span>
+          <span>Duration</span>
         </div>
 
         {songs.map((song, idx) => (
@@ -182,9 +207,18 @@ function Album() {
               </p>
             </div>
 
+            <span className={styles.trackRating}>-</span>
+
             <span className={styles.duration}>
               {msToMinutesSeconds(song.trackTimeMillis)}
             </span>
+
+            <Link
+              to={`/song/${song.trackId}`}
+              className={styles.trackLink}
+            >
+              <img src={arrowUpRight} alt="" />
+            </Link>
           </div>
         ))}
       </div>

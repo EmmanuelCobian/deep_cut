@@ -1,0 +1,53 @@
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.heroText {
+  max-width: 520px;
+}
+
+.eyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.heroTitle {
+  font-size: 5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 24px 0;
+}
+
+.heroTitle em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.heroSubtitle {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0 0 36px 0;
+  max-width: 420px;
+}
+
+.heroButton {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 50px;
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.heroButton:hover {
+  opacity: 0.85;
+}

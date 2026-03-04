@@ -1,6 +1,8 @@
 import styles from './SongCard.module.css';
 
 function SongCard({ song, onSongClick }) {
+  const releaseYear = song.releaseDate.split('-')[0];
+
   return (
     <div className={styles.card} onClick={onSongClick}>
       <div className={styles.imageWrapper}>
@@ -14,7 +16,7 @@ function SongCard({ song, onSongClick }) {
       <div className={styles.textContainer}>
         <p className={styles.title}>{song.title}</p>
         <p className={styles.meta}>
-          Song • {song.artist}
+          {releaseYear} • {song.artist}
         </p>
       </div>
     </div>

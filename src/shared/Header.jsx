@@ -64,9 +64,9 @@ function Header() {
               Log out
             </button>
           ) : (
-            <Link to="/login" className={styles.authButton}>
+            <button onClick={() => navigate('/login')} className={styles.authButton}>
               Log in
-            </Link>
+            </button>
           )}
         </div>
       </div>

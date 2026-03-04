@@ -1,9 +1,8 @@
-import { useState } from 'react';
 import SearchBar from './SearchBar';
-import { useNavigate, useLocation, Link } from 'react-router';
+import { useNavigate, useLocation, NavLink, Link } from 'react-router';
 import { useAuth } from '../lib/context/AuthContext';
 import styles from './Header.module.css';
-import ArrowLeftIcon from '../assets/arrow-left.svg'
+import ArrowLeftIcon from '../assets/arrow-left.svg';
 
 function Header() {
   const { user, signOut } = useAuth();
@@ -24,7 +23,7 @@ function Header() {
           onClick={() => navigate(-1)}
           disabled={isHome}
         >
-          <img src={ArrowLeftIcon}/>
+          <img src={ArrowLeftIcon} />
         </button>
 
         <Link to="/" replace className={styles.logo}>
@@ -38,9 +37,25 @@ function Header() {
 
       <div className={styles.rightSection}>
         <div className={styles.navLinks}>
-          <Link to="/">Home</Link>
-          <Link to="/journal">Journal</Link>
-          <Link to="/lists">Listen List</Link>
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) => (isActive ? styles.active : '')}
+          >
+            Home
+          </NavLink>
+          <NavLink
+            to="/journal"
+            className={({ isActive }) => (isActive ? styles.active : '')}
+          >
+            Journal
+          </NavLink>
+          <NavLink
+            to="/lists"
+            className={({ isActive }) => (isActive ? styles.active : '')}
+          >
+            Listen List
+          </NavLink>
         </div>
 
         <div className={styles.authSection}>

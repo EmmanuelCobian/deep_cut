@@ -77,13 +77,18 @@
 .navLinks a {
   text-decoration: none;
   color: var(--text-secondary);
-  transition: all 0.15s ease;
+  transition: color 0.15s ease;
   display: flex;
   align-items: center;
 }
 
 .navLinks a:hover {
   color: var(--text-primary);
+}
+
+.navLinks a.active {
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--text-primary);
 }
 
 .authButton {

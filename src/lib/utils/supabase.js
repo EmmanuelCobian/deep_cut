@@ -33,7 +33,7 @@ export const insertListenList = async (user, type, media) => {
     {
       user_id: user.id,
       media_id: type === 'album' ? media.collectionId : media.trackId,
-      media_title: media.collectionName,
+      media_title: type ==='album' ? media.collectionName : media.trackName,
       media_release_date: media.releaseDate,
       media_type: type,
       artist_name: media.artistName,

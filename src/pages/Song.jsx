@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router';
 import { useAuth } from '../lib/context/AuthContext';
 import { fetchSong } from '../lib/api/itunes';
+import {
+  fetchListenList,
+  insertListenList,
+  deleteListenList,
+} from '../lib/utils/supabase';
 import Loading from '../shared/Loading';
 import ErrorMessage from '../shared/ErrorMessage';
 import styles from './Album.module.css';
@@ -16,10 +21,11 @@ const LISTENING_STATES = {
 
 function Song() {
   const { songId } = useParams();
-  const { user } = useAuth();
+  const { user, loading: userLoading } = useAuth();
 
   const [song, setSong] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [songLoading, setSongLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState('');
   const [bookmarked, setBookmarked] = useState(false);
   const [listeningState, setListeningState] = useState(
@@ -35,23 +41,62 @@ function Song() {
 
   const getYear = (date) => date.split('-')[0];
 
+  const handleBookmarkClick = async () => {
+    if (!user) return;
+
+    try {
+      if (!bookmarked) {
+        setBookmarked(true);
+        await insertListenList(user, 'song', song);
+      } else {
+        setBookmarked(false);
+        await deleteListenList(user, 'song', song);
+      }
+    } catch (error) {
+      console.error(`Bookmark toggle failed: ${error}`);
+      setBookmarked(!bookmark);
+    }
+  };
+
+  useEffect(() => {
+    const getListenList = async () => {
+      if (!user || userLoading) return;
+
+      try {
+        setListLoading(true);
+        const listenList = await fetchListenList(user);
+        const isBookmarked = listenList.some(
+          (item) => item.media_id === songId
+        );
+        setBookmarked(isBookmarked);
+        setListLoading(false);
+      } catch (error) {
+        console.error(`Failed to fetch listening list: ${error}`);
+        setError(error.message);
+        setListLoading(false);
+      }
+    };
+
+    getListenList();
+  }, [user, userLoading]);
+
   useEffect(() => {
     const getSong = async () => {
       try {
-        setLoading(true);
+        setSongLoading(true);
         const res = await fetchSong(songId);
         setSong(res.results[0]);
-        setLoading(false);
+        setSongLoading(false);
       } catch (err) {
         setError(err.message);
-        setLoading(false);
+        setSongLoading(false);
       }
     };
 
     getSong();
   }, [songId]);
 
-  if (loading) return <Loading />;
+  if (songLoading || listLoading) return <Loading />;
   if (error) return <ErrorMessage error={error} />;
 
   return (
@@ -82,7 +127,7 @@ function Song() {
 
       <div className={styles.actionBar}>
         <div className={styles.leftActions}>
-          <button className={styles.iconButton}>
+          <button className={styles.iconButton} onClick={handleBookmarkClick}>
             <img
               src={bookmarked ? bookmarkCheckFill : bookmark}
               alt="Bookmark song"

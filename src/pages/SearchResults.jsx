@@ -77,7 +77,7 @@ function SearchResults() {
   return (
     <>
       {artists.length > 0 && <h2>Artists</h2>}
-      <div className={styles.artistCardContainer}>
+      <div className={styles.cardContainer}>
         {artists.map((artist) => (
           <div key={artist.artistId}>
             <ArtistCard
@@ -89,7 +89,7 @@ function SearchResults() {
       </div>
 
       <h2>Songs</h2>
-      <div className={styles.albumCardContainer}>
+      <div className={styles.cardContainer}>
         {songs.map((song) => (
           <div key={song.trackId}>
             <SongCard
@@ -101,7 +101,7 @@ function SearchResults() {
       </div>
 
       <h2>Albums</h2>
-      <div className={styles.albumCardContainer}>
+      <div className={styles.cardContainer}>
         {albums.map((album) => (
           <div key={album.collectionId}>
             <AlbumCard

@@ -7,6 +7,7 @@ import SongCard from '../shared/SongCard';
 import AlbumCard from '../shared/AlbumCard';
 import { fetchListenList } from '../lib/utils/supabase';
 import { normalizeSong, normalizeAlbum } from '../lib/utils/utils';
+import styles from './ListenList.module.css';
 
 function ListenList() {
   const [songs, setSongs] = useState([]);
@@ -51,7 +52,7 @@ function ListenList() {
     <div>
       <div>
         <h2>Songs</h2>
-        <div>
+        <div className={styles.cardContainer}>
           {songs.map((song) => (
             <SongCard
               song={normalizeSong(song)}
@@ -62,12 +63,14 @@ function ListenList() {
       </div>
       <div>
         <h2>Albums</h2>
-        {albums.map((album) => (
-          <AlbumCard
-            album={normalizeAlbum(album)}
-            onAlbumClick={() => handleAlbumClick(album.media_id)}
-          />
-        ))}
+        <div className={styles.cardContainer}>
+          {albums.map((album) => (
+            <AlbumCard
+              album={normalizeAlbum(album)}
+              onAlbumClick={() => handleAlbumClick(album.media_id)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

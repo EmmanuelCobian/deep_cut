@@ -47,10 +47,10 @@ function Song() {
     try {
       if (!bookmarked) {
         setBookmarked(true);
-        await insertListenList(user, 'song', song);
+        await insertListenList(user.id, 'song', song);
       } else {
         setBookmarked(false);
-        await deleteListenList(user, 'song', song);
+        await deleteListenList(user.id, 'song', song);
       }
     } catch (error) {
       console.error(`Bookmark toggle failed: ${error}`);
@@ -64,7 +64,7 @@ function Song() {
 
       try {
         setListLoading(true);
-        const listenList = await fetchListenList(user);
+        const listenList = await fetchListenList(user.id);
         const isBookmarked = listenList.some(
           (item) => item.media_id === songId
         );

@@ -61,10 +61,10 @@ function Album() {
     try {
       if (!bookmarked) {
         setBookmarked(true);
-        await insertListenList(user, 'album', album);
+        await insertListenList(user.id, 'album', album);
       } else {
         setBookmarked(false);
-        await deleteListenList(user, 'album', album);
+        await deleteListenList(user.id, 'album', album);
       }
     } catch (error) {
       console.error(`Bookmark toggle failed: ${error}`);
@@ -78,7 +78,7 @@ function Album() {
 
       try {
         setListLoading(true);
-        const listenList = await fetchListenList(user);
+        const listenList = await fetchListenList(user.id);
         const isBookmarked = listenList.some(
           (item) => item.media_id === albumId
         );

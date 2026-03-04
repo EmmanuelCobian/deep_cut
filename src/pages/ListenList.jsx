@@ -31,7 +31,7 @@ function ListenList() {
 
       try {
         setListLoading(true);
-        const list = await fetchListenList(user);
+        const list = await fetchListenList(user.id);
         setSongs(list.filter((media) => media.media_type === 'song'));
         setAlbums(list.filter((media) => media.media_type === 'album'));
         setListLoading(false);

@@ -12,7 +12,7 @@ import {
   deleteListenList,
   fetchListenList,
   insertListenList,
-  fetchALbumRating,
+  fetchAlbumRating,
 } from '../lib/utils/supabase';
 
 const LISTENING_STATES = {
@@ -104,7 +104,7 @@ function Album() {
 
       try {
         setAlbumRatingLoading(true);
-        const rating = await fetchALbumRating(user.id, album.collectionId);
+        const rating = await fetchAlbumRating(user.id, album.collectionId);
         console.log(rating);
         setAlbumRatingLoading(false);
       } catch (error) {

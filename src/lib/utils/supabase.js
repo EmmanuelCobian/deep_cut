@@ -12,7 +12,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
  * @param {string} albumId - the album id returned by iTunes api
  * @returns Object with album rating details
  */
-export const fetchALbumRating = async (userId, albumId) => {
+export const fetchAlbumRating = async (userId, albumId) => {
   const { data, error } = await supabase
     .from('album_ratings')
     .select('*')
@@ -61,7 +61,7 @@ export const fetchTrackRatings = async (userId, albumId) => {
     .from('track_ratings')
     .select('*')
     .eq('user_id', userId)
-    .eq('albumId', albumId);
+    .eq('album_id', albumId);
 
   if (error) throw error;
   return data;

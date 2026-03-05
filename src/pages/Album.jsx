@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router';
+import { useParams, Link } from 'react-router';
 import { useAuth } from '../lib/context/AuthContext';
 import { fetchAlbum } from '../lib/api/itunes';
 import Loading from '../shared/Loading';
 import ErrorMessage from '../shared/ErrorMessage';
 import SessionModal from '../shared/SessionModal';
+import ReviewSection from '../shared/ReviewSection';
 import styles from './Album.module.css';
 import bookmark from '../assets/bookmark.svg';
 import bookmarkCheckFill from '../assets/bookmark-check-fill.svg';
@@ -41,7 +42,6 @@ function Album() {
   const [albumRatingLoading, setAlbumRatingLoading] = useState(true);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
 
   const msToHoursMinutes = (milliseconds) => {
     const totalMinutes = Math.floor(milliseconds / (1000 * 60));
@@ -149,6 +149,10 @@ function Album() {
     getRatings();
   }, [user, userLoading, album]);
 
+  const handleReviewSave = (updatedRating) => {
+    setAlbumRating(updatedRating);
+  };
+
   const handleSessionUpdate = (updatedRating, updatedTracks) => {
     setAlbumRating(updatedRating);
     setTrackRatings(updatedTracks);
@@ -178,11 +182,6 @@ function Album() {
   };
 
   const handleSessionButtonClick = () => {
-    if (listeningState === LISTENING_STATES.LISTENED) {
-      console.log(albumRating)
-      navigate(`/journal/${albumRating.album_id}`);
-      return;
-    }
     setModalOpen(true);
   };
 
@@ -201,7 +200,7 @@ function Album() {
   }
 
   return (
-    <div>
+    <>
       <div className={styles.header}>
         <img
           className={styles.cover}
@@ -285,6 +284,10 @@ function Album() {
         })}
       </div>
 
+      {listeningState !== LISTENING_STATES.UNPLAYED && (
+        <ReviewSection albumRating={albumRating} onSave={handleReviewSave} />
+      )}
+
       {modalOpen && (
         <SessionModal
           album={album}
@@ -296,7 +299,7 @@ function Album() {
           onSessionUpdate={handleSessionUpdate}
         />
       )}
-    </div>
+    </>
   );
 }
 

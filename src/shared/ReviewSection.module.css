@@ -1,0 +1,200 @@
+.reviewSection {
+  margin-top: 48px;
+  padding-top: 40px;
+  margin-bottom: 48px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.reviewHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.reviewTitle {
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.editButton {
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.editButton:hover {
+  color: var(--text-primary);
+}
+
+.markdownHint {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  margin-left: 8px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.reviewBody {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reviewRatingRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reviewThoughtsRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reviewLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.ratingInputWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ratingInput {
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 1rem;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.ratingInput:focus {
+  border-color: var(--text-secondary);
+}
+
+.reviewTextarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s ease;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.reviewTextarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.45;
+}
+
+.reviewTextarea:focus {
+  border-color: var(--text-secondary);
+}
+
+.reviewError {
+  font-size: 0.85rem;
+  color: #e05c4b;
+  margin: 0;
+}
+
+.reviewFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.saveButton {
+  padding: 10px 24px;
+  border-radius: 50px;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  min-width: 130px;
+}
+
+.saveButton:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.saveButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 10px 24px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+  background: var(--bg-elevated);
+}
+
+.reviewRatingDisplay {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin: 0;
+}
+
+.ratingValue {
+  font-size: 1.75rem;
+  color: var(--accent);
+}
+
+.reviewEmptyThoughts {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.nudgeButton {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.nudgeButton:hover {
+  opacity: 1;
+  color: var(--text-primary);
+}

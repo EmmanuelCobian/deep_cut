@@ -7,13 +7,14 @@ import {
   insertListenList,
   deleteListenList,
   fetchTrackRating,
+  upsertTrackRating,
 } from '../lib/utils/supabase';
 import Loading from '../shared/Loading';
 import ErrorMessage from '../shared/ErrorMessage';
 import ReviewSection from '../shared/ReviewSection';
-import styles from './Album.module.css';
 import bookmark from '../assets/bookmark.svg';
 import bookmarkCheckFill from '../assets/bookmark-check-fill.svg';
+import styles from './Song.module.css';
 
 const LISTENING_STATES = {
   UNPLAYED: 'Unplayed',
@@ -46,23 +47,6 @@ function Song() {
   };
 
   const getYear = (date) => date.split('-')[0];
-
-  const handleBookmarkClick = async () => {
-    if (!user) return;
-
-    try {
-      if (!bookmarked) {
-        setBookmarked(true);
-        await insertListenList(user.id, 'song', song);
-      } else {
-        setBookmarked(false);
-        await deleteListenList(user.id, 'song', song);
-      }
-    } catch (error) {
-      console.error(`Bookmark toggle failed: ${error}`);
-      setBookmarked(!bookmark);
-    }
-  };
 
   useEffect(() => {
     const getSong = async () => {
@@ -114,17 +98,16 @@ function Song() {
       try {
         setSongRatingLoading(true);
 
-        const rating = await fetchTrackRating(user.id, song.trackId)
+        const rating = await fetchTrackRating(user.id, song.trackId);
 
-        console.log(rating)
-        setSongRating(rating)
+        setSongRating(rating);
 
-        if (rating?.listened) {
-          setListeningState(LISTENING_STATES.LISTENED)
+        if (rating?.rating || rating?.thoughts) {
+          setListeningState(LISTENING_STATES.LISTENED);
         } else if (rating?.listened === false) {
-          setListeningState(LISTENING_STATES.LISTENING)
+          setListeningState(LISTENING_STATES.LISTENING);
         } else {
-          setListeningState(LISTENING_STATES.UNPLAYED)
+          setListeningState(LISTENING_STATES.UNPLAYED);
         }
       } catch (error) {
         console.error(`Failed to fetch song rating: ${error}`);
@@ -136,6 +119,49 @@ function Song() {
 
     getRating();
   }, [user, userLoading, song]);
+
+  const handleBookmarkClick = async () => {
+    if (!user) return;
+
+    try {
+      if (!bookmarked) {
+        setBookmarked(true);
+        await insertListenList(user.id, 'song', song);
+      } else {
+        setBookmarked(false);
+        await deleteListenList(user.id, 'song', song);
+      }
+    } catch (error) {
+      console.error(`Bookmark toggle failed: ${error}`);
+      setBookmarked(!bookmark);
+    }
+  };
+
+  const handleSessionButtonClick = async () => {
+    if (!user || !song) return;
+
+    try {
+      const newRating = await upsertTrackRating({
+        user_id: user.id,
+        track_id: song.trackId,
+        track_title: song.trackName,
+        track_number: song.trackNumber,
+        track_runtime: song.trackTimeMillis,
+        album_id: song.collectionId,
+        listened: false,
+      });
+
+      setSongRating(newRating);
+      setListeningState(LISTENING_STATES.LISTENING);
+    } catch (error) {
+      console.error(`Failed to create journal entry: ${error}`);
+      setError(error.message);
+    }
+  };
+
+  const handleReviewSave = (updatedRating) => {
+    setSongRating(updatedRating);
+  };
 
   if (songLoading || listLoading || songRatingLoading) return <Loading />;
   if (error) return <ErrorMessage error={error} />;
@@ -175,11 +201,14 @@ function Song() {
             />
           </button>
 
-          <button className={styles.primaryButton}>
-            {listeningState === LISTENING_STATES.UNPLAYED
-              ? 'Create journal entry'
-              : 'Edit journal entry'}
-          </button>
+          {listeningState === LISTENING_STATES.UNPLAYED && (
+            <button
+              className={styles.primaryButton}
+              onClick={handleSessionButtonClick}
+            >
+              Create journal entry
+            </button>
+          )}
         </div>
 
         <span
@@ -215,6 +244,20 @@ function Song() {
             {msToMinutesSeconds(song.trackTimeMillis)}
           </span>
         </div>
+      </div>
+
+      <div id="review-section" className={styles.reviewSection}>
+        {listeningState !== LISTENING_STATES.UNPLAYED ? (
+          <ReviewSection
+            mediaRating={songRating}
+            onSave={handleReviewSave}
+            mediaType="song"
+          />
+        ) : (
+          <div className={styles.emptyReview}>
+            <p>No review yet. Create a journal entry to begin.</p>
+          </div>
+        )}
       </div>
     </div>
   );

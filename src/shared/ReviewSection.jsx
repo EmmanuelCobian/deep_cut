@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { updateAlbumRating } from '../lib/utils/supabase';
+import { updateAlbumRating, updateTrackRating } from '../lib/utils/supabase';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import styles from './ReviewSection.module.css';
 
-function ReviewSection({ albumRating, onSave }) {
+function ReviewSection({ mediaRating, onSave, mediaType = 'album' }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [rating, setRating] = useState(albumRating?.rating ?? '');
-  const [thoughts, setThoughts] = useState(albumRating?.thoughts ?? '');
+  const [rating, setRating] = useState(mediaRating?.rating ?? '');
+  const [thoughts, setThoughts] = useState(mediaRating?.thoughts ?? '');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [isDirty, setIsDirty] = useState(false);
@@ -32,10 +32,18 @@ function ReviewSection({ albumRating, onSave }) {
       setSaving(true);
       setError('');
 
-      const updated = await updateAlbumRating(albumRating.id, {
-        rating: rating !== '' ? Number(rating) : null,
-        thoughts: thoughts || null,
-      });
+      let updated;
+      if (mediaType === 'album') {
+        updated = await updateAlbumRating(mediaRating.id, {
+          rating: rating !== '' ? Number(rating) : null,
+          thoughts: thoughts || null,
+        });
+      } else if (mediaType === 'song') {
+        updated = await updateTrackRating(mediaRating.id, {
+          rating: rating !== '' ? Number(rating) : null,
+          thoughts: thoughts || null,
+        })
+      }
 
       setIsDirty(false);
       setIsEditing(false);
@@ -49,8 +57,8 @@ function ReviewSection({ albumRating, onSave }) {
   };
 
   const handleCancel = () => {
-    setRating(albumRating?.rating ?? '');
-    setThoughts(albumRating?.thoughts ?? '');
+    setRating(mediaRating?.rating ?? '');
+    setThoughts(mediaRating?.thoughts ?? '');
     setIsDirty(false);
     setError('');
     setIsEditing(false);
@@ -74,12 +82,12 @@ function ReviewSection({ albumRating, onSave }) {
         {isEditing ? (
           <>
             <div className={styles.reviewRatingRow}>
-              <label className={styles.reviewLabel} htmlFor="album-rating">
+              <label className={styles.reviewLabel} htmlFor="media-rating">
                 Overall rating
               </label>
               <div className={styles.ratingInputWrap}>
                 <input
-                  id="album-rating"
+                  id="media-rating"
                   type="number"
                   className={styles.ratingInput}
                   min="0"
@@ -94,12 +102,12 @@ function ReviewSection({ albumRating, onSave }) {
             </div>
 
             <div className={styles.reviewThoughtsRow}>
-              <label className={styles.reviewLabel} htmlFor="album-thoughts">
+              <label className={styles.reviewLabel} htmlFor="media-thoughts">
                 Thoughts
                 <span className={styles.markdownHint}>Markdown supported</span>
               </label>
               <textarea
-                id="album-thoughts"
+                id="media-thoughts"
                 className={styles.reviewTextarea}
                 placeholder="Write down your thoughts here"
                 value={thoughts}

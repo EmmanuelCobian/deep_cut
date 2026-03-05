@@ -15,7 +15,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 export const upsertTrackRating = async (data) => {
   const { data: result, error } = await supabase
     .from('track_ratings')
-    .upsert(data, { onConflict: 'id' })
+    .upsert(data, { onConflict: 'user_id,track_id' })
     .select()
     .single();
 
@@ -42,7 +42,26 @@ export const completeAlbumSession = async (entryId) => {
 };
 
 /**
- * Updates overall rating and thoughts on a journal entry.
+ * Updates overall rating and thoughts on a track rating
+ * 
+ * @param {string} entryId - the track_ratings row id
+ * @param {{ rating?: number, thoughts?: string }} updates 
+ * @returns the updated track_ratings row
+ */
+export const updateTrackRating = async (entryId, updates) => {
+  const { data, error } = await supabase
+    .from('track_ratings')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', entryId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+
+/**
+ * Updates overall rating and thoughts on an album entry.
  *
  * @param {string} entryId - the album_ratings row id
  * @param {{ rating?: number, thoughts?: string }} updates
@@ -124,7 +143,7 @@ export const fetchTrackRatings = async (userId, albumId) => {
 
 /**
  * Get the track rating for a track with songId
- * 
+ *
  * @param {string} userId - the user id returned by auth context
  * @param {string} songId - the album id returned by iTunes api
  * @returns Object with track rating details
@@ -142,7 +161,7 @@ export const fetchTrackRating = async (userId, songId) => {
 
 /**
  * Updates rows in track_ratings when a new listening session is started
- * 
+ *
  * @param {string} entryId - the album ratings id
  * @param {string} albumId - the album id returned by the iTunes api
  * @param {string} userId - the user id returned by auth context

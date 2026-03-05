@@ -1,15 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router';
+import { useParams, Link, useNavigate } from 'react-router';
 import { useAuth } from '../lib/context/AuthContext';
 import { fetchAlbum } from '../lib/api/itunes';
 import Loading from '../shared/Loading';
 import ErrorMessage from '../shared/ErrorMessage';
 import SessionModal from '../shared/SessionModal';
 import ReviewSection from '../shared/ReviewSection';
-import styles from './Album.module.css';
-import bookmark from '../assets/bookmark.svg';
-import bookmarkCheckFill from '../assets/bookmark-check-fill.svg';
-import arrowUpRight from '../assets/arrow-up-right.svg';
 import {
   deleteListenList,
   fetchListenList,
@@ -17,6 +13,10 @@ import {
   fetchAlbumRating,
   fetchTrackRatings,
 } from '../lib/utils/supabase';
+import bookmark from '../assets/bookmark.svg';
+import bookmarkCheckFill from '../assets/bookmark-check-fill.svg';
+import arrowUpRight from '../assets/arrow-up-right.svg';
+import styles from './Album.module.css';
 
 const LISTENING_STATES = {
   UNPLAYED: 'Unplayed',
@@ -42,6 +42,7 @@ function Album() {
   const [albumRatingLoading, setAlbumRatingLoading] = useState(true);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const msToHoursMinutes = (milliseconds) => {
     const totalMinutes = Math.floor(milliseconds / (1000 * 60));
@@ -259,7 +260,12 @@ function Album() {
               <span className={styles.trackNumber}>{idx + 1}</span>
 
               <div className={styles.trackInfo}>
-                <p className={styles.trackName}>{song.trackName}</p>
+                <p
+                  className={styles.trackName}
+                  onClick={() => navigate(`/song/${song.trackId}`)}
+                >
+                  {song.trackName}
+                </p>
                 <p className={styles.trackArtist}>
                   {song.contentAdvisoryRating === 'Explicit' && (
                     <span className={styles.explicit}>E</span>
@@ -284,9 +290,15 @@ function Album() {
         })}
       </div>
 
-      {listeningState !== LISTENING_STATES.UNPLAYED && (
-        <ReviewSection albumRating={albumRating} onSave={handleReviewSave} />
-      )}
+      <div className={styles.reviewSection}>
+        {listeningState !== LISTENING_STATES.UNPLAYED ? (
+          <ReviewSection mediaRating={albumRating} onSave={handleReviewSave} />
+        ) : (
+          <div className={styles.emptyReview}>
+            <p>No review yet. Create a journal entry to begin.</p>
+          </div>
+        )}
+      </div>
 
       {modalOpen && (
         <SessionModal

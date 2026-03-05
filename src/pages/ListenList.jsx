@@ -31,7 +31,9 @@ function ListenList() {
 
       try {
         setListLoading(true);
+
         const list = await fetchListenList(user.id);
+
         setSongs(list.filter((media) => media.media_type === 'song'));
         setAlbums(list.filter((media) => media.media_type === 'album'));
         setListLoading(false);
@@ -55,6 +57,7 @@ function ListenList() {
         <div className={styles.cardContainer}>
           {songs.map((song) => (
             <SongCard
+              key={song.media_id}
               song={normalizeSong(song)}
               onSongClick={() => handleSongClick(song.media_id)}
             />
@@ -66,6 +69,7 @@ function ListenList() {
         <div className={styles.cardContainer}>
           {albums.map((album) => (
             <AlbumCard
+              key={album.media_id}
               album={normalizeAlbum(album)}
               onAlbumClick={() => handleAlbumClick(album.media_id)}
             />

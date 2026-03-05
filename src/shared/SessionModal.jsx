@@ -216,7 +216,7 @@ function SessionModal({
             onClick={handleFinish}
             disabled={!canComplete || saving || completing}
           >
-            {completing ? 'Finishing...' : 'Finish session'}
+            {completing ? 'Saving...' : 'Mark Listened'}
           </button>
         </div>
       </div>

@@ -6,9 +6,11 @@ import {
   fetchListenList,
   insertListenList,
   deleteListenList,
+  fetchTrackRating,
 } from '../lib/utils/supabase';
 import Loading from '../shared/Loading';
 import ErrorMessage from '../shared/ErrorMessage';
+import ReviewSection from '../shared/ReviewSection';
 import styles from './Album.module.css';
 import bookmark from '../assets/bookmark.svg';
 import bookmarkCheckFill from '../assets/bookmark-check-fill.svg';
@@ -24,13 +26,17 @@ function Song() {
   const { user, loading: userLoading } = useAuth();
 
   const [song, setSong] = useState(null);
-  const [songLoading, setSongLoading] = useState(true);
-  const [listLoading, setListLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [songRating, setSongRating] = useState(null);
   const [bookmarked, setBookmarked] = useState(false);
+
   const [listeningState, setListeningState] = useState(
     LISTENING_STATES.UNPLAYED
   );
+
+  const [songLoading, setSongLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(true);
+  const [songRatingLoading, setSongRatingLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const msToMinutesSeconds = (milliseconds) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -59,36 +65,17 @@ function Song() {
   };
 
   useEffect(() => {
-    const getListenList = async () => {
-      if (!user || userLoading) return;
-
-      try {
-        setListLoading(true);
-        const listenList = await fetchListenList(user.id);
-        const isBookmarked = listenList.some(
-          (item) => item.media_id === songId
-        );
-        setBookmarked(isBookmarked);
-        setListLoading(false);
-      } catch (error) {
-        console.error(`Failed to fetch listening list: ${error}`);
-        setError(error.message);
-        setListLoading(false);
-      }
-    };
-
-    getListenList();
-  }, [user, userLoading]);
-
-  useEffect(() => {
     const getSong = async () => {
       try {
         setSongLoading(true);
+
         const res = await fetchSong(songId);
+
         setSong(res.results[0]);
-        setSongLoading(false);
       } catch (err) {
+        console.error(`Failed to fetch song: ${error}`);
         setError(err.message);
+      } finally {
         setSongLoading(false);
       }
     };
@@ -96,7 +83,61 @@ function Song() {
     getSong();
   }, [songId]);
 
-  if (songLoading || listLoading) return <Loading />;
+  useEffect(() => {
+    const getListenList = async () => {
+      if (!user || userLoading) return;
+
+      try {
+        setListLoading(true);
+
+        const listenList = await fetchListenList(user.id);
+        const isBookmarked = listenList.some(
+          (item) => item.media_id === songId
+        );
+
+        setBookmarked(isBookmarked);
+      } catch (error) {
+        console.error(`Failed to fetch listening list: ${error}`);
+        setError(error.message);
+      } finally {
+        setListLoading(false);
+      }
+    };
+
+    getListenList();
+  }, [user, userLoading, songId]);
+
+  useEffect(() => {
+    const getRating = async () => {
+      if (!user || userLoading || !song) return;
+
+      try {
+        setSongRatingLoading(true);
+
+        const rating = await fetchTrackRating(user.id, song.trackId)
+
+        console.log(rating)
+        setSongRating(rating)
+
+        if (rating?.listened) {
+          setListeningState(LISTENING_STATES.LISTENED)
+        } else if (rating?.listened === false) {
+          setListeningState(LISTENING_STATES.LISTENING)
+        } else {
+          setListeningState(LISTENING_STATES.UNPLAYED)
+        }
+      } catch (error) {
+        console.error(`Failed to fetch song rating: ${error}`);
+        setError(error.message);
+      } finally {
+        setSongRatingLoading(false);
+      }
+    };
+
+    getRating();
+  }, [user, userLoading, song]);
+
+  if (songLoading || listLoading || songRatingLoading) return <Loading />;
   if (error) return <ErrorMessage error={error} />;
 
   return (

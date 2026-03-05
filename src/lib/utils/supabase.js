@@ -42,7 +42,7 @@ export const completeAlbumSession = async (entryId) => {
 };
 
 /**
- * Updates overall rating and thoughts on a completed journal entry.
+ * Updates overall rating and thoughts on a journal entry.
  *
  * @param {string} entryId - the album_ratings row id
  * @param {{ rating?: number, thoughts?: string }} updates
@@ -109,7 +109,7 @@ export const createAlbumSession = async (userId, album) => {
  *
  * @param {string} userId - the user id returned by auth context
  * @param {string} albumId - the album id returned by iTunes api
- * @returns Object with the track ratings for songs in album
+ * @returns List of objects with the track ratings for songs in album
  */
 export const fetchTrackRatings = async (userId, albumId) => {
   const { data, error } = await supabase
@@ -120,6 +120,24 @@ export const fetchTrackRatings = async (userId, albumId) => {
 
   if (error) throw error;
   return data;
+};
+
+/**
+ * Get the track rating for a track with songId
+ * 
+ * @param {string} userId - the user id returned by auth context
+ * @param {string} songId - the album id returned by iTunes api
+ * @returns Object with track rating details
+ */
+export const fetchTrackRating = async (userId, songId) => {
+  const { data, error } = await supabase
+    .from('track_ratings')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('track_id', songId);
+
+  if (error) throw error;
+  return data.length > 0 ? data[0] : null;
 };
 
 /**

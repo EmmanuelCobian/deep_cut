@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   createAlbumSession,
   linkStandaloneRatings,
@@ -97,7 +97,7 @@ function SessionModal({
       onClose();
     } catch (err) {
       console.error('Failed to save session:', err);
-      setError('Something went wrong saving your session. Try again.');
+      setError(err.message);
     } finally {
       setSaving(false);
     }
@@ -124,12 +124,12 @@ function SessionModal({
 
       const completedEntry = await completeAlbumSession(currentEntry.id);
       const updatedTracks = await fetchTrackRatings(userId, album.collectionId);
-      
+
       onSessionUpdate(completedEntry, updatedTracks);
       onClose();
     } catch (err) {
       console.error('Failed to finish session:', err);
-      setError('Something went wrong finishing your session. Try again.');
+      setError(err);
     } finally {
       setCompleting(false);
     }

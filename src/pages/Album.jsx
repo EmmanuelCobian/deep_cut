@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router';
+import { useCallback, useEffect, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router';
 import { useAuth } from '../lib/context/AuthContext';
 import { fetchAlbum } from '../lib/api/itunes';
 import Loading from '../shared/Loading';
 import ErrorMessage from '../shared/ErrorMessage';
+import SessionModal from '../shared/SessionModal';
 import styles from './Album.module.css';
 import bookmark from '../assets/bookmark.svg';
 import bookmarkCheckFill from '../assets/bookmark-check-fill.svg';
@@ -13,6 +14,7 @@ import {
   fetchListenList,
   insertListenList,
   fetchAlbumRating,
+  fetchTrackRatings,
 } from '../lib/utils/supabase';
 
 const LISTENING_STATES = {
@@ -23,18 +25,23 @@ const LISTENING_STATES = {
 
 function Album() {
   const { albumId } = useParams();
-  const [albumRating, setAlbumRating] = useState(null);
+  const { user, loading: userLoading } = useAuth();
+
   const [album, setAlbum] = useState(null);
   const [songs, setSongs] = useState([]);
+  const [albumRating, setAlbumRating] = useState(null);
+  const [trackRatings, setTrackRatings] = useState([]);
   const [bookmarked, setBookmarked] = useState(false);
   const [listeningState, setListeningState] = useState(
     LISTENING_STATES.UNPLAYED
   );
+  const [modalOpen, setModalOpen] = useState(false);
+
   const [albumLoading, setAlbumLoading] = useState(true);
   const [albumRatingLoading, setAlbumRatingLoading] = useState(true);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState('');
-  const { user, loading: userLoading } = useAuth();
+  const navigate = useNavigate();
 
   const msToHoursMinutes = (milliseconds) => {
     const totalMinutes = Math.floor(milliseconds / (1000 * 60));
@@ -59,6 +66,100 @@ function Album() {
     return msToHoursMinutes(total);
   };
 
+  const getRatingForTrack = useCallback(
+    (trackId) =>
+      trackRatings.find((rating) => rating.track_id === String(trackId)) ??
+      null,
+    [trackRatings]
+  );
+
+  useEffect(() => {
+    const getAlbum = async () => {
+      try {
+        setAlbumLoading(true);
+
+        const res = await fetchAlbum(albumId);
+        const [header, ...rest] = res.results;
+
+        setAlbum({ ...header, runtime: getAlbumRuntime(rest) });
+        setSongs(rest);
+      } catch (error) {
+        console.error(`Failed to fetch album: ${error}`);
+        setError(error.message);
+      } finally {
+        setAlbumLoading(false);
+      }
+    };
+
+    getAlbum();
+  }, [albumId]);
+
+  useEffect(() => {
+    const getListenList = async () => {
+      if (!user || userLoading) return;
+
+      try {
+        setListLoading(true);
+
+        const listenList = await fetchListenList(user.id);
+        const isBookmarked = listenList.some(
+          (item) => item.media_id === albumId
+        );
+
+        setBookmarked(isBookmarked);
+      } catch (error) {
+        console.error(`Failed to fetch listening list: ${error}`);
+        setError(error.message);
+      } finally {
+        setListLoading(false);
+      }
+    };
+
+    getListenList();
+  }, [user, userLoading, albumId]);
+
+  useEffect(() => {
+    const getRatings = async () => {
+      if (!user || userLoading || !album) return;
+
+      try {
+        setAlbumRatingLoading(true);
+
+        const rating = await fetchAlbumRating(user.id, album.collectionId);
+        const tracks = await fetchTrackRatings(user.id, album.collectionId);
+
+        setAlbumRating(rating);
+        setTrackRatings(tracks);
+
+        if (rating?.status === 'completed') {
+          setListeningState(LISTENING_STATES.LISTENED);
+        } else if (rating?.status === 'in_progress') {
+          setListeningState(LISTENING_STATES.LISTENING);
+        } else {
+          setListeningState(LISTENING_STATES.UNPLAYED);
+        }
+      } catch (error) {
+        console.error(`Failed to fetch album rating: ${error}`);
+        setError(error.message);
+      } finally {
+        setAlbumRatingLoading(false);
+      }
+    };
+
+    getRatings();
+  }, [user, userLoading, album]);
+
+  const handleSessionUpdate = (updatedRating, updatedTracks) => {
+    setAlbumRating(updatedRating);
+    setTrackRatings(updatedTracks);
+
+    if (updatedRating?.status === 'completed') {
+      setListeningState(LISTENING_STATES.LISTENED);
+    } else if (updatedRating?.status === 'in_progress') {
+      setListeningState(LISTENING_STATES.LISTENING);
+    }
+  };
+
   const handleBookmarkClick = async () => {
     if (!user) return;
 
@@ -72,69 +173,26 @@ function Album() {
       }
     } catch (error) {
       console.error(`Bookmark toggle failed: ${error}`);
-      setBookmarked(!bookmark);
+      setBookmarked((prev) => !prev);
     }
   };
 
-  useEffect(() => {
-    const getListenList = async () => {
-      if (!user || userLoading) return;
+  const handleSessionButtonClick = () => {
+    if (listeningState === LISTENING_STATES.LISTENED) {
+      console.log(albumRating)
+      navigate(`/journal/${albumRating.album_id}`);
+      return;
+    }
+    setModalOpen(true);
+  };
 
-      try {
-        setListLoading(true);
-        const listenList = await fetchListenList(user.id);
-        const isBookmarked = listenList.some(
-          (item) => item.media_id === albumId
-        );
-        setBookmarked(isBookmarked);
-        setListLoading(false);
-      } catch (error) {
-        console.error(`Failed to fetch listening list: ${error}`);
-        setError(error.message);
-        setListLoading(false);
-      }
-    };
-
-    getListenList();
-  }, [user, userLoading]);
-
-  useEffect(() => {
-    const getAlbumRating = async () => {
-      if (!user || userLoading || !album) return;
-
-      try {
-        setAlbumRatingLoading(true);
-        const rating = await fetchAlbumRating(user.id, album.collectionId);
-        console.log(rating);
-        setAlbumRatingLoading(false);
-      } catch (error) {
-        console.error(`Failed to fetch album rating: ${error}`);
-        setError(error.message);
-        setAlbumRatingLoading(false);
-      }
-    };
-
-    getAlbumRating();
-  }, [user, userLoading, album]);
-
-  useEffect(() => {
-    const getAlbum = async () => {
-      try {
-        setAlbumLoading(true);
-        const res = await fetchAlbum(albumId);
-        const [header, ...rest] = res.results;
-        setAlbum({ ...header, runtime: getAlbumRuntime(rest) });
-        setSongs(rest);
-        setAlbumLoading(false);
-      } catch (error) {
-        console.error(`Failed to fetch album: ${error}`);
-        setError(error.message);
-        setAlbumLoading(false);
-      }
-    };
-
-    getAlbum();
-  }, [albumId]);
+  const sessionButtonLabel = () => {
+    if (listeningState === LISTENING_STATES.UNPLAYED)
+      return 'Create journal entry';
+    if (listeningState === LISTENING_STATES.LISTENING)
+      return 'Continue journal entry';
+    return 'View entry';
+  };
 
   if (albumLoading || listLoading || albumRatingLoading) return <Loading />;
 
@@ -171,10 +229,11 @@ function Album() {
             />
           </button>
 
-          <button className={styles.primaryButton}>
-            {listeningState === LISTENING_STATES.UNPLAYED
-              ? 'Create journal entry'
-              : 'Edit journal entry'}
+          <button
+            className={styles.primaryButton}
+            onClick={handleSessionButtonClick}
+          >
+            {sessionButtonLabel()}
           </button>
         </div>
 
@@ -193,35 +252,50 @@ function Album() {
           <span>Duration</span>
         </div>
 
-        {songs.map((song, idx) => (
-          <div key={song.trackId} className={styles.trackRow}>
-            <span className={styles.trackNumber}>{idx + 1}</span>
+        {songs.map((song, idx) => {
+          const trackRating = getRatingForTrack(song.trackId);
 
-            <div className={styles.trackInfo}>
-              <p className={styles.trackName}>{song.trackName}</p>
-              <p className={styles.trackArtist}>
-                {song.contentAdvisoryRating === 'Explicit' && (
-                  <span className={styles.explicit}>E</span>
-                )}
-                {song.artistName}
-              </p>
+          return (
+            <div key={song.trackId} className={styles.trackRow}>
+              <span className={styles.trackNumber}>{idx + 1}</span>
+
+              <div className={styles.trackInfo}>
+                <p className={styles.trackName}>{song.trackName}</p>
+                <p className={styles.trackArtist}>
+                  {song.contentAdvisoryRating === 'Explicit' && (
+                    <span className={styles.explicit}>E</span>
+                  )}
+                  {song.artistName}
+                </p>
+              </div>
+
+              <span className={styles.trackRating}>
+                {trackRating?.rating ?? '-'}
+              </span>
+
+              <span className={styles.duration}>
+                {msToMinutesSeconds(song.trackTimeMillis)}
+              </span>
+
+              <Link to={`/song/${song.trackId}`} className={styles.trackLink}>
+                <img src={arrowUpRight} alt="" />
+              </Link>
             </div>
-
-            <span className={styles.trackRating}>-</span>
-
-            <span className={styles.duration}>
-              {msToMinutesSeconds(song.trackTimeMillis)}
-            </span>
-
-            <Link
-              to={`/song/${song.trackId}`}
-              className={styles.trackLink}
-            >
-              <img src={arrowUpRight} alt="" />
-            </Link>
-          </div>
-        ))}
+          );
+        })}
       </div>
+
+      {modalOpen && (
+        <SessionModal
+          album={album}
+          songs={songs}
+          existingEntry={albumRating}
+          existingTrackRatings={trackRatings}
+          userId={user.id}
+          onClose={() => setModalOpen(false)}
+          onSessionUpdate={handleSessionUpdate}
+        />
+      )}
     </div>
   );
 }

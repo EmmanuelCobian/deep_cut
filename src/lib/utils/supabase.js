@@ -6,6 +6,61 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 /**
+ * Insert or update a track rating row.
+ * If data.id is provided, updates that row. Otherwise inserts a new one.
+ *
+ * @param {Object} data - track rating fields
+ * @returns the upserted row
+ */
+export const upsertTrackRating = async (data) => {
+  const { data: result, error } = await supabase
+    .from('track_ratings')
+    .upsert(data, { onConflict: 'id' })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return result;
+};
+
+/**
+ * Marks an album session as completed.
+ *
+ * @param {string} entryId - the album_ratings row id
+ * @returns the updated album_ratings row
+ */
+export const completeAlbumSession = async (entryId) => {
+  const { data, error } = await supabase
+    .from('album_ratings')
+    .update({ status: 'completed', updated_at: new Date().toISOString() })
+    .eq('id', entryId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+
+/**
+ * Updates overall rating and thoughts on a completed journal entry.
+ *
+ * @param {string} entryId - the album_ratings row id
+ * @param {{ rating?: number, thoughts?: string }} updates
+ * @returns the updated album_ratings row
+ */
+export const updateAlbumRating = async (entryId, updates) => {
+  const { data, error } = await supabase
+    .from('album_ratings')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', entryId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+
+/**
  * Checks if an entry exists for an album and returns it
  *
  * @param {string} userId - the user id returned by auth context
@@ -20,7 +75,7 @@ export const fetchAlbumRating = async (userId, albumId) => {
     .eq('album_id', albumId);
 
   if (error) throw error;
-  return data;
+  return data.length > 0 ? data[0] : null;
 };
 
 /**
@@ -37,7 +92,7 @@ export const createAlbumSession = async (userId, album) => {
       {
         user_id: userId,
         album_id: album.collectionId,
-        album_title: album.collectionTitle,
+        album_title: album.collectionName,
         artist_name: album.artistName,
         artwork_url: album.artworkUrl100,
         status: 'in_progress',
@@ -46,7 +101,7 @@ export const createAlbumSession = async (userId, album) => {
     .select();
 
   if (error) throw error;
-  return data;
+  return data[0];
 };
 
 /**

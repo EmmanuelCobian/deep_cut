@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router';
 import supabase from '../lib/utils/supabase';
 import ErrorMessage from './ErrorMessage';
 import Loading from './Loading';
-import AlbumCard from './AlbumCard';
 import StatCard from './StatCard';
 import styles from './Dashboard.module.css';
 
@@ -56,7 +55,7 @@ function Dashboard({ user }) {
       </div>
 
       <div className={styles.statsRow}>
-        <StatCard label="Albums listened" value={stats?.totalAlbums || '-'} />
+        <StatCard label="Albums rated" value={stats?.totalAlbums || '-'} />
         <StatCard label="Tracks rated" value={stats?.totalTracks || '-'} />
         <StatCard
           label="Avg album rating"

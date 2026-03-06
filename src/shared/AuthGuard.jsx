@@ -1,11 +1,12 @@
 import { Navigate } from 'react-router';
 import { useAuth } from '../lib/context/AuthContext';
+import Loading from './Loading';
 
 function AuthGuard({ children }) {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div>loading...</div>;
+    return <Loading />;
   }
 
   if (!user) {

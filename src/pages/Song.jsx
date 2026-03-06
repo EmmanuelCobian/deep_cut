@@ -9,6 +9,7 @@ import {
   fetchTrackRating,
   upsertTrackRating,
 } from '../lib/utils/supabase';
+import { msToMinutesSeconds } from '../lib/utils/utils';
 import Loading from '../shared/Loading';
 import ErrorMessage from '../shared/ErrorMessage';
 import ReviewSection from '../shared/ReviewSection';
@@ -38,13 +39,6 @@ function Song() {
   const [listLoading, setListLoading] = useState(true);
   const [songRatingLoading, setSongRatingLoading] = useState(true);
   const [error, setError] = useState('');
-
-  const msToMinutesSeconds = (milliseconds) => {
-    const totalSeconds = Math.floor(milliseconds / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
 
   const getYear = (date) => date.split('-')[0];
 
@@ -102,7 +96,7 @@ function Song() {
 
         setSongRating(rating);
 
-        if (rating?.rating || rating?.thoughts) {
+        if (rating?.listened || rating?.rating || rating?.thoughts) {
           setListeningState(LISTENING_STATES.LISTENED);
         } else if (rating?.listened === false) {
           setListeningState(LISTENING_STATES.LISTENING);
@@ -148,6 +142,9 @@ function Song() {
         track_number: song.trackNumber,
         track_runtime: song.trackTimeMillis,
         album_id: song.collectionId,
+        release_date: song.releaseDate,
+        artist_name: song.artistName,
+        artwork_url: song.artworkUrl100,
         listened: false,
       });
 

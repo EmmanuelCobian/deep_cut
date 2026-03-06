@@ -13,6 +13,7 @@ import {
   fetchAlbumRating,
   fetchTrackRatings,
 } from '../lib/utils/supabase';
+import { msToHoursMinutes, msToMinutesSeconds } from '../lib/utils/utils';
 import bookmark from '../assets/bookmark.svg';
 import bookmarkCheckFill from '../assets/bookmark-check-fill.svg';
 import arrowUpRight from '../assets/arrow-up-right.svg';
@@ -43,20 +44,6 @@ function Album() {
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
-  const msToHoursMinutes = (milliseconds) => {
-    const totalMinutes = Math.floor(milliseconds / (1000 * 60));
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-    return `${hours > 0 ? `${hours} hr ` : ''}${minutes} min`;
-  };
-
-  const msToMinutesSeconds = (milliseconds) => {
-    const totalSeconds = Math.floor(milliseconds / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
 
   const getYear = (date) => {
     return date.split('-')[0];

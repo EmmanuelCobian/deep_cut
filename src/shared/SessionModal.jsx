@@ -33,6 +33,9 @@ function SessionModal({
         track_runtime: song.trackTimeMillis ?? null,
         listened: existing?.listened ?? false,
         rating: existing?.rating ?? '',
+        release_date: song.releaseDate,
+        artist_name: song.artistName,
+        artwork_url: song.artworkUrl100,
       };
     })
   );

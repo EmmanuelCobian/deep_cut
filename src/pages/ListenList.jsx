@@ -36,6 +36,7 @@ function ListenList() {
 
         setSongs(list.filter((media) => media.media_type === 'song'));
         setAlbums(list.filter((media) => media.media_type === 'album'));
+
         setListLoading(false);
       } catch (error) {
         console.error(`Failed to fetch listening list: ${error}`);
@@ -51,7 +52,11 @@ function ListenList() {
   if (error) return <ErrorMessage error={error} />;
 
   if (songs.length == 0 && albums.length == 0) {
-    return <p className={styles.emptyText}>Bookmark songs and albums and they will appear here!</p>;
+    return (
+      <p className={styles.emptyText}>
+        Bookmark songs and albums and they will appear here!
+      </p>
+    );
   }
 
   return (
@@ -70,18 +75,20 @@ function ListenList() {
           </div>
         </div>
       )}
-      <div>
-        <h2>Albums</h2>
-        <div className={styles.cardContainer}>
-          {albums.map((album) => (
-            <AlbumCard
-              key={album.media_id}
-              album={normalizeAlbum(album)}
-              onAlbumClick={() => handleAlbumClick(album.media_id)}
-            />
-          ))}
+      {albums.length > 0 && (
+        <div>
+          <h2>Albums</h2>
+          <div className={styles.cardContainer}>
+            {albums.map((album) => (
+              <AlbumCard
+                key={album.media_id}
+                album={normalizeAlbum(album)}
+                onAlbumClick={() => handleAlbumClick(album.media_id)}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -118,7 +118,7 @@ function Song() {
     };
 
     getRating();
-  }, [user, userLoading, song]);
+  }, [user?.id, userLoading, song?.trackId]);
 
   const handleBookmarkClick = async () => {
     if (!user) return;
@@ -161,6 +161,7 @@ function Song() {
 
   const handleReviewSave = (updatedRating) => {
     setSongRating(updatedRating);
+    setListeningState(LISTENING_STATES.LISTENED);
   };
 
   if (songLoading || listLoading || songRatingLoading) return <Loading />;

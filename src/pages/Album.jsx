@@ -117,7 +117,7 @@ function Album() {
     };
 
     getListenList();
-  }, [user, userLoading, albumId]);
+  }, [user?.id, userLoading, albumId]);
 
   useEffect(() => {
     const getRatings = async () => {
@@ -148,19 +148,17 @@ function Album() {
     };
 
     getRatings();
-  }, [user, userLoading, album]);
+  }, [user?.id, userLoading, album?.collectionId]);
 
   const handleReviewSave = (updatedRating) => {
     setAlbumRating(updatedRating);
+    setListeningState(LISTENING_STATES.LISTENED);
   };
 
   const handleSessionUpdate = (updatedRating, updatedTracks) => {
     setAlbumRating(updatedRating);
     setTrackRatings(updatedTracks);
-
-    if (updatedRating?.status === 'completed') {
-      setListeningState(LISTENING_STATES.LISTENED);
-    } else if (updatedRating?.status === 'in_progress') {
+    if (updatedRating?.status === 'in_progress') {
       setListeningState(LISTENING_STATES.LISTENING);
     }
   };
@@ -190,8 +188,8 @@ function Album() {
     if (listeningState === LISTENING_STATES.UNPLAYED)
       return 'Create journal entry';
     if (listeningState === LISTENING_STATES.LISTENING)
-      return 'Continue journal entry';
-    return 'View entry';
+      return 'Continue rating tracks';
+    return 'Edit track ratings';
   };
 
   if (albumLoading || listLoading || albumRatingLoading) return <Loading />;

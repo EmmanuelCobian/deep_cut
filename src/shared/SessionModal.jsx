@@ -3,7 +3,6 @@ import {
   createAlbumSession,
   linkStandaloneRatings,
   upsertTrackRating,
-  completeAlbumSession,
   fetchTrackRatings,
 } from '../lib/utils/supabase';
 import styles from './SessionModal.module.css';
@@ -19,13 +18,13 @@ function SessionModal({
 }) {
   const [entry, setEntry] = useState(existingEntry);
   const [saving, setSaving] = useState(false);
-  const [completing, setCompleting] = useState(false);
   const [error, setError] = useState('');
   const [trackStates, setTrackStates] = useState(() =>
     songs.map((song) => {
       const existing = existingTrackRatings.find(
         (r) => r.track_id === String(song.trackId)
       );
+
       return {
         id: existing?.id ?? null,
         track_id: String(song.trackId),
@@ -39,7 +38,6 @@ function SessionModal({
   );
 
   const listenedCount = trackStates.filter((t) => t.listened).length;
-  const canComplete = listenedCount > 0;
 
   const ensureSession = async () => {
     if (entry) return entry;
@@ -100,38 +98,6 @@ function SessionModal({
       setError(err.message);
     } finally {
       setSaving(false);
-    }
-  };
-
-  const handleFinish = async () => {
-    try {
-      setCompleting(true);
-      setError('');
-      const currentEntry = await ensureSession();
-
-      await Promise.all(
-        trackStates.map((t) =>
-          upsertTrackRating({
-            ...t,
-            id: t.id ?? undefined,
-            entry_id: currentEntry.id,
-            user_id: userId,
-            album_id: album.collectionId,
-            rating: t.rating !== '' ? Number(t.rating) : null,
-          })
-        )
-      );
-
-      const completedEntry = await completeAlbumSession(currentEntry.id);
-      const updatedTracks = await fetchTrackRatings(userId, album.collectionId);
-
-      onSessionUpdate(completedEntry, updatedTracks);
-      onClose();
-    } catch (err) {
-      console.error('Failed to finish session:', err);
-      setError(err);
-    } finally {
-      setCompleting(false);
     }
   };
 
@@ -207,16 +173,9 @@ function SessionModal({
           <button
             className={styles.saveButton}
             onClick={handleSave}
-            disabled={saving || completing}
+            disabled={saving}
           >
             {saving ? 'Saving...' : 'Save progress'}
-          </button>
-          <button
-            className={styles.finishButton}
-            onClick={handleFinish}
-            disabled={!canComplete || saving || completing}
-          >
-            {completing ? 'Saving...' : 'Mark Listened'}
           </button>
         </div>
       </div>

@@ -88,6 +88,38 @@ export const fetchAlbumRating = async (userId, albumId) => {
 };
 
 /**
+ * Checks if a user has album entries and returns all of them
+ *
+ * @param {string} userId - the user id returned by auth context
+ * @returns list of albums journal entries
+ */
+export const fetchAllAlbumRatings = async (userId) => {
+  const { data, error } = await supabase
+    .from('album_ratings')
+    .select('*')
+    .eq('user_id', userId);
+
+  if (error) throw error;
+  return data;
+};
+
+/**
+ * Checks if a user has track entries and returns all of them
+ *
+ * @param {string} userId - the user id returned by auth context
+ * @returns list of track journal entries
+ */
+export const fetchAllTrackRatings = async (userId) => {
+  const { data, error } = await supabase
+    .from('track_ratings')
+    .select('*')
+    .eq('user_id', userId);
+
+  if (error) throw error;
+  return data;
+};
+
+/**
  * Inserts a row into the album_ratings table, returns the new entry
  *
  * @param {string} userId - the user id returned by auth context
@@ -104,6 +136,7 @@ export const createAlbumSession = async (userId, album) => {
         album_title: album.collectionName,
         artist_name: album.artistName,
         artwork_url: album.artworkUrl100,
+        release_date: album.releaseDate,
         status: 'in_progress',
       },
     ])

@@ -9,6 +9,7 @@ import NotFound from './pages/NotFound';
 import AuthGuard from './shared/AuthGuard';
 import Login from './pages/Login';
 import ListenList from './pages/ListenList';
+import Journal from './pages/Journal';
 import './App.css';
 
 function App() {
@@ -38,14 +39,6 @@ function App() {
             element={
               <AuthGuard>
                 <ListenList />
-              </AuthGuard>
-            }
-          />
-          <Route
-            path="/account"
-            element={
-              <AuthGuard>
-                <div>Account</div>
               </AuthGuard>
             }
           />

@@ -50,20 +50,26 @@ function ListenList() {
   if (listLoading || userLoading) return <Loading />;
   if (error) return <ErrorMessage error={error} />;
 
+  if (songs.length == 0 && albums.length == 0) {
+    return <p className={styles.emptyText}>Bookmark songs and albums and they will appear here!</p>;
+  }
+
   return (
     <div>
-      <div>
-        <h2>Songs</h2>
-        <div className={styles.cardContainer}>
-          {songs.map((song) => (
-            <SongCard
-              key={song.media_id}
-              song={normalizeSong(song)}
-              onSongClick={() => handleSongClick(song.media_id)}
-            />
-          ))}
+      {songs.length > 0 && (
+        <div>
+          <h2>Songs</h2>
+          <div className={styles.cardContainer}>
+            {songs.map((song) => (
+              <SongCard
+                key={song.media_id}
+                song={normalizeSong(song)}
+                onSongClick={() => handleSongClick(song.media_id)}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <div>
         <h2>Albums</h2>
         <div className={styles.cardContainer}>

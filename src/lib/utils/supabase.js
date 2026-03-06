@@ -24,34 +24,20 @@ export const upsertTrackRating = async (data) => {
 };
 
 /**
- * Marks an album session as completed.
- *
- * @param {string} entryId - the album_ratings row id
- * @returns the updated album_ratings row
- */
-export const completeAlbumSession = async (entryId) => {
-  const { data, error } = await supabase
-    .from('album_ratings')
-    .update({ status: 'completed', updated_at: new Date().toISOString() })
-    .eq('id', entryId)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
-};
-
-/**
  * Updates overall rating and thoughts on a track rating
- * 
+ *
  * @param {string} entryId - the track_ratings row id
- * @param {{ rating?: number, thoughts?: string }} updates 
+ * @param {{ rating?: number, thoughts?: string }} updates
  * @returns the updated track_ratings row
  */
 export const updateTrackRating = async (entryId, updates) => {
   const { data, error } = await supabase
     .from('track_ratings')
-    .update({ ...updates, updated_at: new Date().toISOString() })
+    .update({
+      ...updates,
+      listened: true,
+      updated_at: new Date().toISOString(),
+    })
     .eq('id', entryId)
     .select()
     .single();
@@ -70,7 +56,11 @@ export const updateTrackRating = async (entryId, updates) => {
 export const updateAlbumRating = async (entryId, updates) => {
   const { data, error } = await supabase
     .from('album_ratings')
-    .update({ ...updates, updated_at: new Date().toISOString() })
+    .update({
+      ...updates,
+      status: 'completed',
+      updated_at: new Date().toISOString(),
+    })
     .eq('id', entryId)
     .select()
     .single();

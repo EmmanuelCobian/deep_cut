@@ -30,7 +30,7 @@ function App() {
             path="/journal"
             element={
               <AuthGuard>
-                <div>Journal</div>
+                <Journal />
               </AuthGuard>
             }
           />

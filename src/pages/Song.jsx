@@ -87,7 +87,7 @@ function Song() {
 
   useEffect(() => {
     const getRating = async () => {
-      if (!user || userLoading || !song) return;
+      if (userLoading || !user?.id || !song?.trackId) return;
 
       try {
         setSongRatingLoading(true);

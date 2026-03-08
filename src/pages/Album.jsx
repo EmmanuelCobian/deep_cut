@@ -84,7 +84,7 @@ function Album() {
 
   useEffect(() => {
     const getListenList = async () => {
-      if (!user || userLoading) return;
+      if (userLoading || !user?.id) return;
 
       try {
         setListLoading(true);
@@ -108,7 +108,7 @@ function Album() {
 
   useEffect(() => {
     const getRatings = async () => {
-      if (!user || userLoading || !album) return;
+      if (userLoading || !user?.id || !album) return;
 
       try {
         setAlbumRatingLoading(true);

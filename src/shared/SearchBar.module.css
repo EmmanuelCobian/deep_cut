@@ -1,26 +1,27 @@
 .searchWrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-items: start;
-  gap: 12px;
-  width: 100%;
-  height: 40px;
-  background: var(--bg-elevated);
-  border-radius: 50px;
-  padding-left: 1rem;
-  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 200px;
+  max-width: 280px;
 }
 
 .searchIcon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-secondary);
   pointer-events: none;
+  opacity: 0.5;
 }
 
 .searchWrapper input {
   width: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-
-  font-size: 0.95rem;
+  padding: 8px 32px 8px 34px;
+  border-radius: 50px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
   color: var(--text-primary);
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
 }

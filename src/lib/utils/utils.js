@@ -53,6 +53,57 @@ export function normalizeAlbum(album) {
   };
 }
 
+export const normalizeEntry = (entry, type) => ({
+  ...(type === 'album' ? normalizeAlbum(entry) : normalizeSong(entry)),
+  type: type,
+  original: entry,
+});
+
+export const applyFilters = (entries, { search, mediaFilter, sort }) => {
+  let result = [...entries];
+
+  if (mediaFilter !== 'all') {
+    result = result.filter((e) =>
+      mediaFilter === 'albums' ? e.type === 'album' : e.type === 'song'
+    );
+  }
+
+  if (search.trim()) {
+    const q = search.toLowerCase();
+    result = result.filter(
+      (e) =>
+        e.title?.toLowerCase().includes(q) ||
+        e.artist?.toLowerCase().includes(q)
+    );
+  }
+
+  result.sort((a, b) => {
+    switch (sort) {
+      case 'Oldest first': {
+        return (
+          new Date(a.original.updated_at ?? a.original.added_at) -
+          new Date(b.original.updated_at ?? b.original.added_at)
+        );
+      }
+      case 'Highest rated': {
+        return (b.original.rating ?? -1) - (a.original.rating ?? -1);
+      }
+      case 'Lowest rated': {
+        return (a.original.rating ?? -1) - (b.original.rating ?? -1);
+      }
+      case 'Newest first':
+      default: {
+        return (
+          new Date(b.original.updated_at ?? b.original.added_at) -
+          new Date(a.original.updated_at ?? a.original.added_at)
+        );
+      }
+    }
+  });
+
+  return result;
+};
+
 export function meanOfTwoArrays(arr1, arr2) {
   const combined = [...arr1, ...arr2];
   if (combined.length === 0) return 0;

@@ -4,7 +4,7 @@ import { useAuth } from '../lib/context/AuthContext';
 import { fetchAlbum } from '../lib/api/itunes';
 import Loading from '../shared/Loading';
 import ErrorMessage from '../shared/ErrorMessage';
-import SessionModal from '../shared/SessionModal';
+import SessionModal from '../features/SessionModal'
 import ReviewSection from '../shared/ReviewSection';
 import {
   deleteListenList,

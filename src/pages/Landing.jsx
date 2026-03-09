@@ -1,7 +1,7 @@
 import { useAuth } from '../lib/context/AuthContext';
 import Loading from '../shared/Loading';
-import Hero from '../shared/Hero';
-import Dashboard from '../shared/Dashboard';
+import Hero from '../features/Hero';
+import Dashboard from '../features/Dashboard';
 import styles from './Landing.module.css';
 
 function Landing() {

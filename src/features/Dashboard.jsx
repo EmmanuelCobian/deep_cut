@@ -10,11 +10,11 @@ import {
   meanOfTwoArrays,
   sortByRecent,
 } from '../lib/utils/utils';
-import AlbumCard from './AlbumCard';
-import SongCard from './SongCard';
-import ErrorMessage from './ErrorMessage';
-import Loading from './Loading';
-import StatCard from './StatCard';
+import AlbumCard from '../shared/AlbumCard';
+import SongCard from '../shared/SongCard';
+import ErrorMessage from '../shared/ErrorMessage';
+import Loading from '../shared/Loading';
+import StatCard from '../shared/StatCard';
 import styles from './Dashboard.module.css';
 
 function Dashboard({ user }) {

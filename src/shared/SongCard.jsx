@@ -1,7 +1,7 @@
 import styles from './SongCard.module.css';
 
 function SongCard({ song, onSongClick }) {
-  const releaseYear = song.releaseDate.split('-')[0];
+  const releaseYear = song.releaseDate.split('-')[0] ?? 'Unkonwn';
 
   return (
     <div className={styles.card} onClick={onSongClick}>

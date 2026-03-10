@@ -45,7 +45,7 @@ function SearchResults() {
 
         setAlbums(albums);
         setArtists(artists);
-        setSongs(songs);
+        setSongs(songs.filter(song => song.isStreamable));
         setIsLoading(false);
       } catch (error) {
         console.error(`Failed to fetch music: ${error}`);
@@ -88,7 +88,7 @@ function SearchResults() {
         ))}
       </div>
 
-      <h2>Songs</h2>
+      {songs.length > 0 && <h2>Songs</h2>}
       <div className={styles.cardContainer}>
         {songs.map((song) => (
           <div key={song.trackId}>
@@ -100,7 +100,7 @@ function SearchResults() {
         ))}
       </div>
 
-      <h2>Albums</h2>
+      {albums.length > 0 && <h2>Albums</h2>}
       <div className={styles.cardContainer}>
         {albums.map((album) => (
           <div key={album.collectionId}>

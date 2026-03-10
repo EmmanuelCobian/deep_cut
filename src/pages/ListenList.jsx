@@ -80,6 +80,13 @@ function ListenList() {
     });
   };
 
+  const handlePageChange = (page) => {
+    setSearchParams((prev) => {
+      prev.set('page', String(page));
+      return prev;
+    });
+  };
+
   const handleAlbumClick = (albumId) => {
     navigate(`/album/${albumId}`);
   };
@@ -133,8 +140,8 @@ function ListenList() {
           value={sort}
           onChange={(e) => setSort(e.target.value)}
         >
-          <option value="Newest first">Newest first</option>
-          <option value="Oldest first">Oldest first</option>
+          <option value="Newest first">Newest added first</option>
+          <option value="Oldest first">Oldest added first</option>
         </select>
       </div>
 

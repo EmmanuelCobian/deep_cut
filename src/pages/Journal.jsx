@@ -82,6 +82,13 @@ function Journal() {
     });
   };
 
+  const handlePageChange = (page) => {
+    setSearchParams((prev) => {
+      prev.set('page', String(page));
+      return prev;
+    });
+  };
+
   const handleAlbumClick = (album) => {
     navigate(`/album/${album.original.album_id}`);
   };

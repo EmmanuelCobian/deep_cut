@@ -7,9 +7,9 @@ function Hero() {
       <div className={styles.heroText}>
         <p className={styles.eyebrow}>Welcome to Deep Cut!</p>
         <h1 className={styles.heroTitle}>
-          <em>Your</em> story.
+          Every listen,
           <br />
-          <em>Your</em> words.
+          <em>Documented.</em>
         </h1>
         <p className={styles.heroSubtitle}>
           This is a listening journal for people who love music and want to

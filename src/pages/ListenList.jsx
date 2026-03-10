@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../lib/context/AuthContext';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import Loading from '../shared/Loading';
 import ErrorMessage from '../shared/ErrorMessage';
 import SongCard from '../shared/SongCard';
@@ -21,6 +21,10 @@ function ListenList() {
 
   const { user, loading: userLoading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const ITEMS_PER_PAGE = 12;
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
 
   useEffect(() => {
     const getListeningList = async () => {
@@ -57,6 +61,25 @@ function ListenList() {
     [allEntries, search, mediaFilter, sort]
   );
 
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredEntries.length / ITEMS_PER_PAGE)
+  );
+  const currentPage = Math.min(page, totalPages);
+  const indexOfFirst = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentEntries = filteredEntries.slice(
+    indexOfFirst,
+    indexOfFirst + ITEMS_PER_PAGE
+  );
+
+  const handleMediaFilterChange = (filter) => {
+    setMediaFilter(filter);
+    setSearchParams((prev) => {
+      prev.set('page', '1');
+      return prev;
+    });
+  };
+
   const handleAlbumClick = (albumId) => {
     navigate(`/album/${albumId}`);
   };
@@ -87,24 +110,24 @@ function ListenList() {
         <div className={styles.pills}>
           <button
             className={`${styles.pill} ${mediaFilter === 'all' ? styles.pillActive : ''}`}
-            onClick={() => setMediaFilter('all')}
+            onClick={() => handleMediaFilterChange('all')}
           >
             All
           </button>
           <button
             className={`${styles.pill} ${mediaFilter === 'albums' ? styles.pillActive : ''}`}
-            onClick={() => setMediaFilter('albums')}
+            onClick={() => handleMediaFilterChange('albums')}
           >
             Albums
           </button>
           <button
             className={`${styles.pill} ${mediaFilter === 'songs' ? styles.pillActive : ''}`}
-            onClick={() => setMediaFilter('songs')}
+            onClick={() => handleMediaFilterChange('songs')}
           >
             Songs
           </button>
         </div>
-        
+
         <select
           className={styles.sortSelect}
           value={sort}
@@ -115,7 +138,7 @@ function ListenList() {
         </select>
       </div>
 
-      {filteredEntries.length === 0 ? (
+      {currentEntries.length === 0 ? (
         <div className={styles.emptyState}>
           {allEntries.length === 0 ? (
             <>
@@ -130,7 +153,7 @@ function ListenList() {
         </div>
       ) : (
         <div className={styles.grid}>
-          {filteredEntries.map((entry) =>
+          {currentEntries.map((entry) =>
             entry.type === 'album' ? (
               <AlbumCard
                 key={entry.id}
@@ -147,6 +170,28 @@ function ListenList() {
           )}
         </div>
       )}
+
+      <div className={styles.pagination}>
+        <button
+          className={styles.pageButton}
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Prev
+        </button>
+
+        <span className={styles.pageNumbers}>
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <button
+          className={styles.pageButton}
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }

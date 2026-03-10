@@ -61,7 +61,7 @@ function Login() {
 
         <h1 className={styles.title}>Login</h1>
         <p className={styles.subtitle}>
-          Enter your email and get a magic link to sign in instantly.
+          Enter your email and get a magic link.
         </p>
 
         <form className={styles.form} onSubmit={handleLogin}>
@@ -92,8 +92,7 @@ function Login() {
         </form>
 
         <p className={styles.fine}>
-          No account yet? Just enter your email — we'll create one
-          automatically.
+          No account yet? Just enter your email. One will be created for you automatically.
         </p>
       </div>
     </div>

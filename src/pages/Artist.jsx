@@ -19,10 +19,7 @@ function Artist() {
   const [error, setError] = useState('');
 
   const ITEMS_PER_PAGE = 12;
-  const page = Math.max(
-    1,
-    parseInt(searchParams.get('page') || '1', 10)
-  );
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
 
   const determineCollectionType = (collection) => {
     const tracks = collection.trackCount;

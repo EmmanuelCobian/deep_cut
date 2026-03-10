@@ -21,11 +21,24 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/search/:query" element={<SearchResults />} />
           <Route path="/artist/:artistId" element={<Artist />} />
-          <Route path="/album/:albumId" element={<Album />} />
-          <Route path="/song/:songId" element={<Song />} />
-
           <Route path="/login" element={<Login />} />
 
+          <Route
+            path="/album/:albumId"
+            element={
+              <AuthGuard>
+                <Album />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/song/:songId"
+            element={
+              <AuthGuard>
+                <Song />
+              </AuthGuard>
+            }
+          />
           <Route
             path="/journal"
             element={
